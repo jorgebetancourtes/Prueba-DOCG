@@ -1,0 +1,17 @@
+<div class="flex justify-end items-center gap-2" x-data>
+    <template x-if="$store.modalData.record">
+        <button type="submit"
+            @click.stop="window.location.href='/access_control/add_access/' + $store.modalData.getField('id')"
+            class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Permisos
+        </button>
+    </template>
+
+    <template x-if="$store.modalData.record">
+        <button type="submit"
+            @click.stop="window.location.href='/access_control/add_users/' + $store.modalData.getField('id')"
+            class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Usuarios
+        </button>
+    </template>
+</div>

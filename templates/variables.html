@@ -1,0 +1,43 @@
+<!--Dynamic tables variables-->
+{% set no_tabs=['logs_auditoria','ai_queries','archivos'] %}
+{% set no_tab_count = ['Inactivo','Cancelada','Finalizada'] %}
+{% set no_add_button = ['logs_auditoria','ai_queries'] %}
+{% set no_edit_button = ['logs_auditoria','ai_queries','archivos'] %}
+
+{% set date_range_search = ['fecha_orden'] %}
+{% set percentage_format_columns = [] %}
+{% set money_format_columns = ['importe','descuentos','precio_unitario','sub_total','impuesto','importe_total','monto','importe_pagado','importe_total','importe_restante','subtotal'] %}
+
+{% set badges = ['estatus'] %}
+{% set purple_badge_values = [] %}
+{% set primary_badge_values = ['En revisión'] %}
+{% set success_badge_values = [] %}
+{% set warning_badge_values = [] %}
+{% set danger_badge_values = [] %}
+{% set gray_badge_values = ['Finalizada'] %}
+{% set column_one_line = ['id_visualizacion','periodo','fecha_pago','id_integrante_nombre_completo','uuid','fecha_emision','','fecha_inicio','fecha_fin','fecha_de_comprobante','fecha_de_gasto','id_proyecto_nombre','id_ciudad_nombre','estatus'] %}
+
+{% set calendar_titles = {'ordenes_de_compra':['id_proveedor_nombre','estatus']} %}
+
+<!--Dynamic form variables-->
+{% set columns_foreign_options=['unidad_de_medida','estatus'] %}
+{% set date_time_columns=[] %}
+{% set date_columns=['fecha_entrega_estimada'] %}
+{% set time_columns=[] %}
+{% set file_columns=['archivo_cotizacion','imagen_verificacion'] %}
+{% set input_multiple_select=[''] %} <!--db.Column(ARRAY(db.String))-->
+
+{% macro id_proveedor(option) %}
+    {{ option.id_visualizacion ~ ' - ' ~ option.nombre }}
+{% endmacro %}
+
+{% macro id_ubicacion(option) %}
+    {{ option.id_visualizacion ~ ' - ' ~ option.nombre }}
+{% endmacro %}
+
+<!--Dynamic two table variables-->
+{% set textarea_columns = ['notas','descripcion','sugerencias','motivo'] %}
+{% set number_columns = ['cantidad','cantidad_recibida','cantidad_ordenada'] %}
+{% set text_columns = ['folio_fiscal'] %}
+{% set drop_downs=['facturable'] %}
+{% set allow_new_value_dropdowns = [] %}

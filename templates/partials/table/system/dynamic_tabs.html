@@ -1,0 +1,33 @@
+<div x-data="{activeDefTab:'todos'}" id="tabs">
+    <ul class="flex flex-wrap text-xs text-center dark:border-gray/20 border-b border-lightgray/10">
+        <li class="">
+            <a href="javaScript:;"
+                @click="
+                activeDefTab = 'todos';
+                $nextTick(() => $dispatch('filter-status', activeDefTab))
+                "
+                :class="activeDefTab === 'todos' ? 'bg-primary/10 text-primary' : 'bg-transparent text-gray hover:bg-primary/10 hover:text-primary'"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-t-lg">
+                Todos
+            </a>
+        </li>
+        {% for tab in data_tabs %}
+            <li>
+                <a href="javascript:;"
+                @click="
+                    activeDefTab = '{{ tab['tab'] }}';
+                    $nextTick(() => $dispatch('filter-status', activeDefTab))
+                    "
+                    :class="activeDefTab === '{{ tab['tab'] }}' ? 'bg-primary/10 text-primary' : 'bg-transparent text-gray hover:bg-primary/10 hover:text-primary'"
+                    class="inline-flex items-center gap-2 px-5 py-3 rounded-t-lg">
+                    {{ tab['tab'] }}
+                    {% if tab['tab'] not in vars.no_tab_count %}
+                        <span>
+                            {{ tab["count"] | default(0) }}
+                        </span>
+                    {% endif %}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

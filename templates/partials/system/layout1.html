@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "./partials/system/head.html" %}
+<body x-data="main" class="font-inter text-base antialiased font-medium relative vertical"
+    :class="[ $store.app.sidebar ? 'toggle-sidebar' : '', $store.app.fullscreen ? 'full' : '',$store.app.mode]">
+
+    <!-- Start Layout -->
+    <div class="bg-white dark:bg-dark text-dark dark:text-white">
+
+        <!-- Start Menu Sidebar Olverlay -->
+        <div x-cloak class="fixed inset-0 bg-dark/90 dark:bg-white/5 backdrop-blur-sm z-40 lg:hidden"
+            :class="{'hidden' : !$store.app.sidebar}" @click="$store.app.toggleSidebar()"></div>
+        <!-- End Menu Sidebar Olverlay -->
+
+        <!-- Start Main Content -->
+        <div class="main-container flex mx-auto">
+            <!-- Start Sidebar -->
+            {% include "./partials/sidebar.html" %}
+            <!-- End sidebar -->
+
+            <!-- Start Content Area -->
+            <div class="main-content flex-1">
+                <!-- Start Topbar -->
+                {% include "./partials/system/header.html" %}
+                <!-- End Topbar -->
+                 {% include "./partials/system/flash_alerts.html" %}
+
+                <!-- Start Content -->
+                <div class="h-[calc(100vh-60px)] relative overflow-x-hidden px-5 {% if html=='table' %} overflow-y-hidden {% else %} overflow-y-auto {% endif %}">
+
+                    <!-- Start All Card -->
+                    {% block content %}
+
+                    {% endblock %}
+                    <!-- End Footer -->
+                    {% include "./partials/system/footer.html" %}
+                </div>
+                <!-- End Content -->
+            </div>
+            <!-- End Content Area -->
+        </div>
+    </div>
+    <!-- End Layout -->
+
+    <!-- All javascirpt -->
+    {% include './partials/system/scripts.html' %}
+</body>
+
+</html>

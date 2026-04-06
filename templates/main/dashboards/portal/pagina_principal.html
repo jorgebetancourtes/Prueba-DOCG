@@ -1,0 +1,115 @@
+{% extends './partials/system/layout1.html' %}
+{% include 'partials/system/flash_alerts.html' %}
+{% block content %}
+{% include 'partials/system/alerts.html' %}
+{% import 'variables.html' as vars %}
+
+<div id="main" class=" pt-5">
+    <div class="flex flex-col gap-5 overflow-y-auto" style="max-height: calc(100vh - 171px);">
+        <div class="grid grid-cols-1 xl:grid-cols-1 gap-5">
+            <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg space-y-6">
+                    <div class="flex items-center gap-2.5 justify-center">
+                        <span>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.6679 7C15.6679 6.58579 16.0037 6.25 16.4179 6.25H22C22.4142 6.25 22.75 6.58579 22.75 7V12.5458C22.75 12.96 22.4142 13.2958 22 13.2958C21.5858 13.2958 21.25 12.96 21.25 12.5458V7.75H16.4179C16.0037 7.75 15.6679 7.41421 15.6679 7Z" fill="#267DFF" />
+                                <path opacity="0.3" d="M20.1873 7.75L14.0916 13.8027C13.5778 14.3134 13.2447 14.6423 12.9673 14.8527C12.7073 15.0499 12.5857 15.072 12.5052 15.072C12.4247 15.072 12.3031 15.0499 12.0431 14.8526C11.7658 14.6421 11.4327 14.3132 10.919 13.8024L10.6448 13.5296C10.1755 13.063 9.77105 12.6607 9.40375 12.382C9.01003 12.0832 8.57254 11.8572 8.03395 11.8574C7.49535 11.8576 7.05802 12.0839 6.66452 12.383C6.29742 12.662 5.89326 13.0645 5.42433 13.5315L1.47078 17.4686C1.17728 17.7608 1.17628 18.2357 1.46856 18.5292C1.76084 18.8227 2.23571 18.8237 2.52922 18.5314L6.44789 14.6292C6.96167 14.1175 7.29478 13.7881 7.57219 13.5772C7.83228 13.3795 7.95393 13.3574 8.03449 13.3574C8.11506 13.3573 8.23672 13.3794 8.49695 13.5769C8.77452 13.7875 9.10787 14.1167 9.62203 14.628L9.89627 14.9007C10.3651 15.367 10.7692 15.7688 11.1362 16.0474C11.5297 16.346 11.9668 16.5719 12.505 16.572C13.0432 16.572 13.4804 16.3462 13.8739 16.0477C14.241 15.7692 14.6452 15.3674 15.1142 14.9013L21.2501 8.80858V7.75H20.1873Z" fill="#267DFF" />
+                            </svg>
+                        </span>
+                        <p class="font-semibold">Ejemplo</p>
+                    </div>
+                    <div class="flex gap-1 xl:gap-[30px] flex-wrap grid-cols-1 sm:grid-cols-1 justify-center">
+                        <div class="flex flex-col items-center">
+                            <span class="text-lg font-bold" id="indicador">     
+                                
+                            </span>
+                        </div>|
+                        <div class="flex flex-col items-center">
+                            <span class="text-lg font-bold" >
+                                123
+                            </span>
+                            <br>
+                            <span class="bg-success/10 text-success flex items-center gap-1 rounded-full py-1 px-2.5 text-xs">
+                                5%
+                                <span>
+                                    <svg width="10" height="10" class="inline-block" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5.73684 9.21053C5.73684 9.64654 5.38338 10 4.94737 10C4.51135 10 4.15789 9.64654 4.15789 9.21053L4.15789 2.69543L2.34772 4.50561C2.03941 4.81392 1.53954 4.81392 1.23123 4.50561C0.922923 4.1973 0.922923 3.69743 1.23123 3.38913L4.38913 0.231232C4.53718 0.0831764 4.73799 -1.83028e-08 4.94737 0C5.15675 1.83066e-08 5.35756 0.0831765 5.50561 0.231232L8.66351 3.38913C8.97181 3.69743 8.97181 4.1973 8.66351 4.50561C8.3552 4.81392 7.85533 4.81392 7.54702 4.50561L5.73684 2.69543V9.21053Z" fill="currentColor"/>
+                                    </svg>
+                                </span>
+                            </span>
+                        </div>|
+                        <div class="flex flex-col items-center">
+                            <span class="text-lg font-bold">     
+                                123
+                            </span>
+                            <br>
+                            <span class="bg-success/10 text-success flex items-center gap-1 rounded-full py-1 px-2.5 text-xs">
+                                5%
+                                <span>
+                                    <svg width="10" height="10" class="inline-block" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" ">
+                                        <path d="M5.73684 9.21053C5.73684 9.64654 5.38338 10 4.94737 10C4.51135 10 4.15789 9.64654 4.15789 9.21053L4.15789 2.69543L2.34772 4.50561C2.03941 4.81392 1.53954 4.81392 1.23123 4.50561C0.922923 4.1973 0.922923 3.69743 1.23123 3.38913L4.38913 0.231232C4.53718 0.0831764 4.73799 -1.83028e-08 4.94737 0C5.15675 1.83066e-08 5.35756 0.0831765 5.50561 0.231232L8.66351 3.38913C8.97181 3.69743 8.97181 4.1973 8.66351 4.50561C8.3552 4.81392 7.85533 4.81392 7.54702 4.50561L5.73684 2.69543V9.21053Z" fill="currentColor"/>
+                                    </svg>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 xl:grid-cols-1 gap-5">
+            <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg">
+                <h2 class="mb-[30px] font-semibold">Compras mensuales por producto</h2>
+                <div id="grafica_ejemplo"></div>
+            </div>
+            <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg">
+                <h2 class="mb-[30px] font-semibold">Detalle compras</h2>
+                <div id="detalle_compras" class="overflow-y-auto"></div>
+            </div>            
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-1 gap-5">
+            <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg">
+                    <div class="flex justify-between items-center gap-3">
+                        <div class="flex flex-col">
+                            <h2 class="font-semibold">Compras diarias</h2>
+                            <span class="text-lightgray text-sm">$MXN</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input id="compras_diarias_inicio" value="{{fecha_inicio}}" type="date" class="form-input rounded-lg w-full" value="{{fecha_inicio}}" onchange="updateComprasDiarias()"> a
+                            <input id="compras_diarias_fin" value="{{fecha_fin}}" type="date" class="form-input rounded-lg w-full" value="{{fecha_fin}}" onchange="updateComprasDiarias()">
+                        </div>
+                    </div>
+                    <div id="grafica_compras_diarias"></div>
+            </div>
+        </div>        
+    </div>
+    {% include "./partials/system/loader.html" %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
+<script src="{{ url_for('static', filename='js/system/apexcharts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts/general.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts/waterfall.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/data_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/loader.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/dynamic_table_init.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/format_functions.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/funciones_generales.js') }}"></script>
+<script>
+        const title_formats = {{ title_formats | tojson }}; 
+        const percentage_format_columns = {{ vars.percentage_format_columns | tojson }};
+        const money_format_columns = {{ vars.money_format_columns | tojson }};        
+        generar_grafica_categorias("#grafica_ejemplo", "bar_stacked",'mes_anio','importe_total','producto','/dashboard_queries/compras_mensuales',options={height:400,valueType: 'currency'})
+        function updateComprasDiarias() {
+            const compras_diarias_inicio = document.getElementById('compras_diarias_inicio').value;
+            const compras_diarias_fin = document.getElementById('compras_diarias_fin').value;
+            generar_grafica(
+                '#grafica_compras_diarias',
+                'line',
+                'fecha',
+                'importe_total',
+                `/dashboard_queries/compras_diarias?fecha_inicio=${compras_diarias_inicio}&fecha_fin=${compras_diarias_fin}`,{'valueType':'currency'}
+            )
+        }
+        updateComprasDiarias()
+        obtener_valor("#indicador",'importe_total','/dashboard_queries/compras_totales','currency')        
+        render_dynamic_table("detalle_compras", '/dashboard_queries/tables?path=compras')
+</script>
+{% endblock content %}

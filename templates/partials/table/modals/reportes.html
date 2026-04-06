@@ -1,0 +1,14 @@
+<div class="flex justify-end items-center gap-2" x-data="{}" x-show="true">
+    <template x-if="$store.modalData">
+        <button
+            type="button"
+            @click.stop="
+                window.location.href =
+                    '/report_queries/' +
+                    $store.modalData.getField('id')
+            "
+            class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Ver
+        </button>
+    </template>
+</div>

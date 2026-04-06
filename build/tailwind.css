@@ -1,0 +1,476 @@
+/*
+--------------------------------------------------------------------------------------
+* Template Name    : Portal de Prestadores de Servicios - ASP .Net MVC 5 & Tailwind CSS Admin & Dashboard Template  * 
+* Author           : Parv Infotech                                                    *
+* Version          : 1.0.0                                                           *
+* Created          : March 2024                                                      *
+* File Description : Main Css file of the template                                   *
+*-------------------------------------------------------------------------------------
+*/
+
+/*****************************
+    1. BASIC                 *
+    2. BUTTON                *
+    3. SCROLLBAR             *
+    4. LAYOUT                *
+    5. SIDEBAR               *
+    6. DROPDOWN              *
+    7. PROFILE DROPDOWN      *
+    8. NOTIFICATION DROPDOWN *
+    9. TABLE                 *
+    10. FORMS                *
+    11. CHECKBOX             *
+    12. RADIO                *
+    13. SWITCHES             *
+    14. EXTRA CSS            *
+******************************/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* 1. BASIC */
+  html {
+    @apply scroll-smooth;
+  }
+
+  [x-cloak] {
+    @apply !hidden;
+  }
+
+  body {
+    @apply bg-white;
+  }
+
+  /* 2. BUTTON */
+  button{
+  @apply focus-visible:shadow-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:outline-none;
+  }
+
+  .btn{
+    @apply py-2.5 px-[18px] capitalize font-semibold text-sm rounded-md inline-block;
+  }
+
+  /* 3.SCROLLBAR */
+  ::-webkit-scrollbar {
+    @apply bg-transparent w-0 h-0;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark/10;
+  }
+
+  /* 4. LAYOUT */
+  .main-container .main-content {
+    @apply transition-all duration-300 lg:ms-[226px];
+  }
+  
+  .vertical.toggle-sidebar .main-container .main-content {
+    @apply lg:ms-[72px];
+  }
+
+  .vertical.toggle-sidebar .sidebar:hover .help-box ,
+  .vertical.toggle-sidebar .sidebar{
+    @apply block;
+  }
+
+  .vertical .sidebar {
+    @apply hidden lg:block;
+  }
+
+  .vertical.toggle-sidebar .sidebar {
+    @apply lg:w-[72px];
+  }
+
+  .vertical.toggle-sidebar .sidebar:hover {
+    @apply w-[226px];
+  }
+
+  .vertical.toggle-sidebar .sidebar .sub-menu,
+  .vertical.toggle-sidebar .sidebar .nav-item a span,
+  .vertical.toggle-sidebar .sidebar .nav-item a .dropdown-icon,
+  .vertical.toggle-sidebar .sidebar h2 ,
+  .vertical.toggle-sidebar .sidebar .main-logo .logo,
+  .vertical.toggle-sidebar .sidebar:hover .main-logo .logo-icon,
+  .vertical.toggle-sidebar .sidebar .help-box {
+    @apply lg:hidden;      
+  }  
+
+  .vertical.toggle-sidebar .sidebar .btn-toggle{
+    @apply lg:rotate-180;
+  }
+
+  .vertical.toggle-sidebar.dark .sidebar:hover .main-logo .logo.dark-logo,
+  .vertical.toggle-sidebar .sidebar:hover .main-logo .logo.light-logo{
+    @apply hidden;
+  }
+
+  .vertical.toggle-sidebar.dark .sidebar:hover .main-logo .logo.light-logo{
+    @apply block;
+  }
+
+  .vertical.toggle-sidebar .sidebar:hover .nav-item a span,
+  .vertical.toggle-sidebar .sidebar:hover h2 ,
+  .vertical.toggle-sidebar .sidebar .main-logo .logo-icon,
+  .vertical.toggle-sidebar .sidebar:hover .main-logo .logo{
+    @apply lg:block;
+  }
+
+  .vertical.toggle-sidebar .sidebar:hover .nav-item{
+    @apply shrink-0;
+  }
+    
+  .vertical.toggle-sidebar .sidebar:hover .sub-menu {
+    @apply lg:flex;
+  }
+
+  .vertical.toggle-sidebar .sidebar .nav-item a {
+    @apply lg:justify-center;
+  }
+
+  .vertical.toggle-sidebar .sidebar:hover .nav-item a {
+    @apply lg:justify-between;
+  }
+
+  .vertical.toggle-sidebar .sidebar:hover .nav-item a .dropdown-icon {
+    @apply lg:flex;
+  }
+
+  .vertical.toggle-sidebar .sidebar ul {
+    @apply lg:gap-y-2 ;
+  }
+
+  .vertical.toggle-sidebar .sidebar:hover ul {
+    @apply lg:gap-1;
+  }
+
+  .vertical.toggle-sidebar .sidebar .sidebar-upgrade{
+    @apply lg:hidden;
+  }
+
+  .vertical.toggle-sidebar .sidebar:hover .sidebar-upgrade{
+    @apply lg:block;
+  }
+
+  /* 5. SIDEBAR */
+  .sidebar {
+    @apply transition-all duration-300;
+  }
+  .sidebar:hover .nav-item > a {
+    @apply w-auto;
+  }
+
+  .sidebar .nav-item > a {
+    @apply mb-1.5 py-1.5 px-2 flex items-center overflow-hidden whitespace-nowrap gap-1 rounded-md text-lightgray hover:text-primary hover:bg-primary/10;
+  }
+
+  .sidebar .nav-item > a:last-child {
+    @apply mb-0;
+  }
+
+  .sidebar .nav-item > a.active {
+    @apply text-primary bg-primary/10;
+  }
+
+  .sidebar ul.sub-menu li a {
+    @apply flex items-center capitalize relative text-gray ps-12 pe-4 py-1 rounded-lg hover:text-dark hover:before:bg-dark dark:hover:text-white dark:hover:before:bg-white before:h-1.5 before:w-1.5 before:bg-gray before:absolute before:top-1/2 before:-translate-y-1/2 before:left-7 before:rounded-full;
+  }
+
+  .sidebar ul.sub-menu li a.active {
+    @apply text-dark before:bg-dark dark:text-white dark:before:bg-white;
+  }
+
+  /* 6. DROPDOWN */
+  .dropdown {
+    @apply relative;
+  }
+
+  .dropdown ul {
+    @apply absolute z-50 mt-0.5 p-5 min-w-[170px] rounded-lg bg-white border-2 space-y-3 border-lightgray/10 dark:bg-dark dark:border-gray/20;
+  }
+
+  .dropdown ul li > a,
+  .dropdown ul li > button,
+  .dropdown ul li > div {
+    @apply flex items-center hover:text-primary;
+  }
+
+  /* 7. PROFILE DROPDOWN */
+  .profile {
+    @apply relative z-40;
+  }
+
+  .profile ul {
+    @apply absolute min-w-[190px] space-y-5 p-5 overflow-hidden rounded-lg bg-white dark:bg-dark dark:border-gray/20 right-0 text-lightgray top-12 w-44 border-2 border-lightgray/10;
+  }
+
+  .profile ul li > a,
+  .profile ul li > button,
+  .profile ul li > div {
+    @apply flex items-center hover:text-primary;
+  }
+
+  /* 8. NOTIFICATION DROPDOWN */
+  .notification{
+    @apply relative z-40;
+  }
+
+  .notification .noti-area {
+    @apply absolute mt-px rounded-lg p-5 bg-white right-0 dark:bg-dark dark:border-gray/20 text-lightgray top-10 w-44 border-2 border-gray/10 min-w-[270px];
+  }
+  .notification ul li > a,
+  .notification ul li > button,
+  .notification ul li > div {
+    @apply flex items-center rounded hover:text-primary;
+  }
+
+  /* 9. TABLE */
+
+  table {
+    @apply w-full !border-collapse;
+  }
+
+  table thead {
+    @apply border-b-2 border-gray/10 dark:border-gray/20 text-gray text-sm;
+  }
+
+  table thead tr,
+  table tbody tr {
+    @apply whitespace-nowrap;
+  }
+
+  table.product-table tbody tr:first-child td{
+    @apply pt-3.5;
+  }
+
+  table.product-table tbody tr td{
+    @apply py-[7px];
+  }
+
+  table tbody tr:first-child td{
+    @apply pt-7;
+  }
+
+  table thead tr th,
+  table tfoot tr th,
+  table tbody tr td {
+    @apply py-3.5 px-4 whitespace-nowrap font-medium;
+  }
+
+  table.table-striped tbody tr:nth-child(odd) {
+    @apply bg-gray/10;
+  }
+
+  table.table-hover tbody tr{
+    @apply hover:bg-gray/10;
+  }
+
+  table.table-borderless thead,
+  table.table-borderless thead tr,
+  table.table-borderless tbody tr,
+  table.table-borderless tfoot tr{
+    @apply border-0;
+  }
+
+  table.product-table tbody tr:first-child td{
+    @apply pt-3.5;
+  }
+
+  table.product-table tbody tr td{
+    @apply py-[7px];
+  }
+
+  table.product-table.table-hover tbody tr:first-child td,table.table-striped tbody tr:first-child td{
+    @apply py-2;
+  }
+
+  table.product-table.table-hover tbody tr td,table.table-striped tbody tr td{
+    @apply py-2;
+  }
+
+  table .invoice-table tr td{
+    @apply last:text-right;
+  }
+
+  /* 10. FORMS */
+  .form-input,.form-textarea,.form-select,.form-multiselect{
+    @apply w-full rounded border-2 border-gray/10 bg-gray/[8%] text-dark dark:border-lightgray/20 dark:text-white dark:bg-lightgray/10 h-12 text-sm placeholder:text-lightgray/80 focus:ring-0 focus:border-primary/20 focus:bg-primary/[0.08] dark:focus:border-primary/80 focus:outline-0;
+  }
+
+  .form-select option{
+    @apply dark:bg-dark dark:text-white;
+  }
+
+  .text-editor body h1{
+    @apply text-white;
+  }
+
+  /* 11. CHECKBOX */
+  .form-radio, .form-checkbox {
+    @apply h-4 w-4 cursor-pointer rounded border-2 border-gray/20 dark:border-lightgray/20 dark:checked:border-transparent bg-transparent text-primary  checked:border-transparent !shadow-none !outline-none !ring-0 !ring-offset-0 checked:bg-[length:90%_90%] disabled:cursor-not-allowed disabled:bg-transparent disabled:!border-2 disabled:!border-gray/20 dark:disabled:!border-gray/20 mr-1.5 hover:disabled:checked:bg-transparent;
+  }
+
+  .form-checkbox.outborder-primary:checked {
+    @apply border-primary bg-transparent ;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23267DFF' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+  }
+
+  .form-checkbox.outborder-purple:checked {
+    @apply !border-purple bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%237B6AFE' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+  }
+
+  .form-checkbox.outborder-success:checked {
+    @apply border-success bg-transparent ;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%2350cd89' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+  }
+
+  .form-checkbox.outborder-warning:checked {
+    @apply border-warning bg-transparent ;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23ffc700' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+  }
+
+  .form-checkbox.outborder-danger:checked {
+    @apply border-danger bg-transparent ;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23f1416c' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+  }
+
+  .form-checkbox.outborder-dark:checked {
+    @apply border-dark bg-transparent ;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23323a46' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+  }
+
+  .form-checkbox.outborder-gray:checked {
+    @apply border-gray bg-transparent;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23050C17' xmlns='http://www.w3.org/2000/svg'><path d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/></svg>");
+  }
+  
+  /* 12. RADIO */
+  .form-radio {
+    @apply rounded-full;
+  }
+
+  .form-radio.outborder-primary:checked {
+    @apply border-primary bg-transparent bg-none;
+  }
+
+  .form-radio.outborder-purple:checked {
+    @apply border-purple bg-transparent bg-none;
+  }
+
+  .form-radio.outborder-success:checked {
+    @apply border-success bg-transparent bg-none;
+  }
+
+  .form-radio.outborder-danger:checked {
+    @apply border-danger bg-transparent bg-none;
+  }
+
+  .form-radio.outborder-warning:checked {
+    @apply border-warning bg-transparent bg-none;
+  }
+
+  .form-radio.outborder-dark:checked {
+    @apply border-dark bg-transparent bg-none;
+  }
+
+  .form-radio.outborder-gray:checked {
+    @apply border-gray bg-transparent bg-none;
+  }
+
+  /* 13. SWITCHES*/
+  .togglebutton.setting input:checked ~ .band {
+    @apply bg-success;
+  }
+
+  .togglebutton input:checked ~ .band {
+    @apply bg-primary;
+  }
+
+  .togglebutton input:checked ~ .dot {
+    @apply translate-x-full bg-white;
+  }
+
+  .togglebutton.out-line input:checked ~ .band {
+    @apply border-primary bg-transparent;
+  }
+
+  .togglebutton.out-line input:checked ~ .dot {
+    @apply translate-x-full bg-primary;
+  }
+
+}
+
+/* 14. EXTRA CSS */
+.animate-strip {
+  -webkit-animation: strip 2s linear infinite;
+  animation: strip 2s linear infinite;
+}
+
+@keyframes strip {
+  from {
+    background-position: 50px 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+.dark .apexcharts-title-text {
+  @apply fill-white;
+}
+
+.dark .apexcharts-canvas .apexcharts-text.apexcharts-xaxis-label,
+.dark .apexcharts-canvas .apexcharts-text.apexcharts-yaxis-label {
+  @apply fill-white;
+}
+
+.dark .apexcharts-canvas .apexcharts-text,
+.dark .apexcharts-canvas .apexcharts-text {
+  @apply fill-white;
+}
+
+.dark .apexcharts-canvas .apexcharts-legend-text {
+  @apply text-white;
+}
+
+.dark .apexcharts-xaxistooltip,.dark .apexcharts-yaxistooltip{
+  @apply border-lightgray/20 bg-dark shadow-none text-white;
+}
+
+.dark .apexcharts-xaxistooltip-bottom{
+  @apply after:border-transparent before:border-b-lightgray;
+}
+
+.dark .apexcharts-gridline{
+  @apply stroke-gray/10;
+}
+
+.dark .apexcharts-tooltip.apexcharts-theme-light,.dark .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title{
+  @apply border-lightgray/20 bg-dark !shadow-none;
+}
+.apexcharts-tooltip{
+  @apply !shadow-none;
+}
+.apexcharts-tooltip.apexcharts-theme-light,.apexcharts-xaxistooltip, .apexcharts-yaxistooltip{
+  @apply border-lightgray/20 bg-white text-lightgray;
+}
+.apexcharts-tooltip.apexcharts-theme-light,.apexcharts-xaxistooltip.apexcharts-xaxistooltip-bottom.apexcharts-theme-light{
+  @apply border-lightgray/20 bg-white dark:bg-dark text-lightgray shadow-none;
+}
+
+.apexcharts-xaxistooltip-bottom{
+  @apply after:border-transparent dark:before:border-b-lightgray before:border-b-lightgray/20;
+}
+
+.apexcharts-legend-text{
+  @apply !text-dark dark:!text-white;
+}
+
+.apexcharts-xcrosshairs{
+  @apply !opacity-0;
+}
+

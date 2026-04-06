@@ -1,0 +1,72 @@
+<div id="table_view" class="flex-1 overflow-y-auto table-scroll-horizontal table-scroll-vertical" style="max-height: calc(100vh - {{height}}px)">
+        <table class="w-full table-hover table-striped">
+            {% include 'partials/table/system/table_head.html' %}
+            <tbody>
+                <!-- Se recorre la lista de registros obtenidos dinámicamente -->
+                <template x-for="(record, index) in items" :key="index">
+                    <tr class="cursor-pointer hover:bg-gray-100" 
+                    {% if not report %}
+                    @click="openActions('{{ table_name }}', record.id,record.estatus)"
+                    {% endif %}>
+                        {% if checkbox %}
+                            <td>
+                                <input type="checkbox" class="form-checkbox" :value="record.id" @change.stop="handleCheckboxChange(record.id)" @click.stop  />
+                            </td>
+                        {% endif %}
+                        <!-- Se recorre el array de columnas que se pasó desde el servidor -->
+                        <template x-for="(col, i) in columns" :key="i">
+                            <td :style="column_one_line.includes(col) ? 'white-space: nowrap' : 'white-space: normal'">
+                                <!-- If the column is 'estatus', show a badge -->
+                                <template x-if="badges.some(badge => col.toLowerCase().includes(badge))">
+                                    <div 
+                                        class="inline-flex items-center rounded-full text-xs justify-center px-2.5 py-1.5"
+                                        :class="{
+                                            'bg-purple text-white':purple_badge_values.includes(record[col]),
+                                            'bg-success text-white':success_badge_values.includes(record[col]),
+                                            'bg-danger text-white':danger_badge_values.includes(record[col]),
+                                            'bg-warning':warning_badge_values.includes(record[col]),
+                                            'bg-primary text-white':primary_badge_values.includes(record[col]),
+                                            'bg-gray/10':gray_badge_values.includes(record[col]),
+                                            'bg-a text-white': !record[col]
+                                        }"
+                                        x-text="record[col] || '-'">
+                                    </div>
+                                </template>
+                                <!-- Otherwise, use your normal text logic -->
+                                 
+                                <template x-if="!badges.some(badge => col.toLowerCase().includes(badge))">
+                                    <span
+                                        x-text="
+                                            record[col]
+                                                ? (
+                                                    money_format_columns.includes(col)
+                                                        ? money_format(record[col])
+                                                    : percentage_format_columns.includes(col)
+                                                        ? record[col] + '%'
+                                                    : isDate(record[col])
+                                                        ? date_format(record[col])
+                                                    : typeof record[col] === 'number' && col !== 'numero_de_cuenta'
+                                                        ? commafy(record[col])
+                                                    : record[col]
+                                                )
+                                                : '-'
+                                        ">
+                                    </span>
+                                </template>
+
+                            </td>
+                        </template>
+                        {% if number_buttons > 0 %}
+                            {% include 'partials/table/buttons/' ~ table_name ~ '.html' ignore missing %}
+                        {% endif %}
+                    </tr>
+                </template>
+                <!-- Si no hay registros, se muestra un mensaje -->
+                <tr x-show="isEmpty()">
+                    <td :colspan="columns.length" class="text-center text-gray-500">
+                        No se encontraron registros
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</div>

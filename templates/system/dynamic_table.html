@@ -1,0 +1,93 @@
+<!-- templates/dynamic_table.htmla -->
+
+{% extends './partials/system/layout1.html' %}
+
+{% block content %}
+{% include "./partials/system/alerts.html" %}
+<!-- Breadcrumb -->
+{% include 'partials/table/system/breadcrumbs.html' %}
+{% import 'variables.html' as vars %}
+<!-- Elemento oculto para pasar data al JS: nombre de tabla y columnas -->
+{% if report %}
+    <div id="table-data" data-table="/report_queries/data/{{id}}" data-columns='{{ columns|tojson }}' hidden></div>
+{% else %}
+    <div id="table-data" data-table="/dynamic/{{ table_name }}/data" data-columns='{{ columns|tojson }}' hidden></div>
+{% endif %}
+<div class="flex flex-col h-[calc(100vh-188px)] sm:h-[calc(100vh-204px)]"
+     x-data="calendarComponent()" x-init="init()">
+
+    <div class="grid grid-cols-1">
+
+        {% if table_name not in vars.no_tabs and not report %}
+            {% include 'partials/table/system/dynamic_tabs.html' %}
+            {% set height=460 %}
+        <!-- SPACER BETWEEN TABS & TABLE -->
+        <div class="h-4 bg-primary/10"></div>            
+        {% else %}
+            {% set height=400 %}
+        {% endif %}
+        <!-- TABLE CONTAINER -->
+        <div class="sticky top-0 bg-white dark:bg-dark dark:border-gray/20  border-2 border-lightgray/10 p-5 rounded-lg">
+
+            <div class="overflow-auto space-y-4"
+                 x-data="tabla"
+                 x-init="initData(); initDatePicker();
+                         $watch('searchInput', value => { search(value) });
+                         selectedIds = [];
+                         document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);">
+
+                {% include 'partials/table/system/table_title.html' %}
+                {% include 'partials/table/system/table.html' %}
+                {% include 'partials/table/system/pagination.html' %}
+
+                <div id="calendar_wrapper" style="display:none">
+                    <div id="calendar_view"></div>
+                </div>
+
+            </div>
+        </div>
+
+        {% include 'partials/table/modals/dynamic_modal.html' %}
+    </div>
+</div>
+{% include "./partials/system/loader.html" %}
+<!-- Incluir archivos JS centralizados -->
+<script src="{{ url_for('static', filename='js/system/table/select2.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/reload_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/data-search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/data_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/loader.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/dynamic_table_init.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/format_functions.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/generate_files.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/download_file.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/calendar.js') }}"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>  
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales/es.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css">
+<script>
+    
+        const table_name = {{ table_name | tojson }};
+        const percentage_format_columns = {{ vars.percentage_format_columns | tojson }};
+        const money_format_columns = {{ vars.money_format_columns | tojson }};
+        const purple_badge_values = {{ vars.purple_badge_values | tojson }};
+        const primary_badge_values = {{ vars.primary_badge_values | tojson }};
+        const success_badge_values = {{ vars.success_badge_values | tojson }};
+        const warning_badge_values = {{ vars.warning_badge_values | tojson }};
+        const danger_badge_values = {{ vars.danger_badge_values | tojson }};
+        const gray_badge_values = {{ vars.gray_badge_values | tojson }};
+        const calendar_titles = {{ vars.calendar_titles | tojson }}; 
+        const title_formats = {{ title_formats | tojson }}; 
+        const badges = {{ vars.badges | tojson }};
+        const file_columns={{ vars.file_columns | tojson }};  
+        const column_one_line={{ vars.column_one_line | tojson }};  
+
+</script>
+{% if javascript %}
+    <script src="{{ url_for('static', filename='js/table_logic/%s.js' % table_name) }}"></script>
+{% endif %}
+{% endblock content %}

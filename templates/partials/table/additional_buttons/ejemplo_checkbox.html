@@ -1,0 +1,103 @@
+{% if can_access('/ordenes_de_compra/aprobar') %}
+    <div class="flex justify-end" id="aprobar" style="display:none">
+        <button
+            id="btnAprobar"
+            type="button"
+        class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Aprobar
+        </button>
+    </div>
+{% endif %}
+<script>
+let selectedIds = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    const aprobar = document.getElementById('aprobar');
+    const btnAprobar = document.getElementById('btnAprobar');
+    const selectAllCheckbox = document.getElementById('select-all'); // optional
+
+    function showButtons() {
+        aprobar.style.display = selectedIds.length > 0 ? 'block' : 'none';
+    }
+
+    function clearSelections() {
+        // 1. Clear array
+        selectedIds = [];
+
+        // 2. Uncheck all row checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+        });
+
+        // 3. Uncheck "select all" checkbox (if exists)
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = false;
+        }
+
+        // 4. Hide button
+        showButtons();
+    }
+
+    window.handleCheckboxChange = function(id) {
+        const index = selectedIds.indexOf(id);
+        if (index === -1) {
+            selectedIds.push(id);
+        } else {
+            selectedIds.splice(index, 1);
+        }
+        showButtons();
+    };
+
+    window.toggleAllCheckboxes = function(event) {
+        selectedIds = [];
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach(cb => {
+            cb.checked = event.target.checked;
+            if (cb.checked && cb.value !== "on") {
+                selectedIds.push(cb.value);
+            }
+        });
+
+        showButtons();
+    };
+
+    btnAprobar.addEventListener('click', async () => {
+        showLoader();
+        if (selectedIds.length === 0) return;
+
+        btnAprobar.disabled = true;
+
+        try {
+            const response = await fetch('/noticias/aprobar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ ids: selectedIds })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Error desconocido');
+            }
+
+            showSuccess(data.message);
+
+            // 🔥 HERE
+            clearSelections();
+
+            // Optional: async refresh
+            reload_table();
+
+        } catch (err) {
+            alert('Error al revisar: ' + err.message);
+        } finally {
+            btnAprobar.disabled = false;
+            hideLoader();
+        }
+    });
+});
+</script>

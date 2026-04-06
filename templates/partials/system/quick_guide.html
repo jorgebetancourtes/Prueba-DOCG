@@ -1,0 +1,51 @@
+{# app/templates/partials/system/components/quick_guide.html #}
+
+<div x-data="modals">
+    <div class="flex items-center justify-center">
+        <button type="button"
+            class="text-primary hover:bg-primary hover:text-white transition-all duration-300 rounded-md"
+            @click="toggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75Z"
+                    fill="currentColor" />
+                <path
+                    d="M12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z"
+                    fill="currentColor" />
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75Z"
+                    fill="currentColor" />
+            </svg>
+        </button>
+    </div>
+    <div class="fixed inset-0 bg-dark/90 dark:bg-white/5 backdrop-blur-sm z-[99999] hidden overflow-y-auto"
+        :class="open && '!block'">
+        <div class="flex items-start justify-center min-h-screen px-4" @click.self="open = false">
+            <div x-show="open" x-transition x-transition.duration.300
+                class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 rounded-lg overflow-hidden my-8 w-full max-w-5xl">
+
+                <!-- Modal header -->
+                <div
+                    class="flex bg-white dark:bg-dark items-center border-b border-lightgray/10 dark:border-gray/20 justify-between px-5 py-3">
+                    <h5 class="font-semibold text-lg">Información</h5>
+                    <button type="button" class="text-lightgray hover:text-primary" @click="toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+                            <path
+                                d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z"
+                                fill="currentColor"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal content -->
+                <div class="p-5 space-y-4">
+                    <div class="text-lightgray text-sm font-normal">
+                        <ul class="list-disc list-inside space-y-2 text-lightgray text-sm font-normal" style="list-style-type: disc; padding-left: 1.25rem;">
+                            <img src="{{ image_path }}" alt="Description of image" width="100%" height="auto">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

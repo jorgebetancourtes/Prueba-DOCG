@@ -1,0 +1,91 @@
+<div class="flex justify-between items-center gap-3">
+    <h2 class="text-base font-semibold mb-4" x-text="titleFormat(table_name)"> </h2>
+    <div class="flex space-x-2 items-center">
+        {% include 'partials/table/additional_buttons/' ~ table_name ~ '.html'  ignore missing %}
+        {% if date_variable!='' and  date_variable %}
+            <button id="calendar_button" type="button" class="btn flex items-center gap-2 justify-center text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10"
+                onclick="(function(){
+                    const wrap = document.getElementById('calendar_wrapper');
+                    const showingCalendar = wrap && getComputedStyle(wrap).display !== 'none';
+                    if (showingCalendar) { table_view(); } else { calendar_view({}); }
+                })()">
+                Calendario
+            </button>
+        {% endif %}
+        <!-- Botón para agregar nuevo registro -->
+        {% if not report and table_name not in vars.no_add_button %}
+            <div class="flex justify-end">
+                <a href="{{ url_for('dynamic.form', table_name=table_name,id_parent_record=id_parent_record,parent_table=parent_table)}}" class="border w-10 h-10 flex items-center justify-center text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 7L7 7M7 7L1 7M7 7L7 1M7 7L7 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </a>
+            </div>
+        {% endif %}
+        <!-- Botón para generar Excel -->
+        {% set kind = 'report' if report else 'model' %}
+        {% set id_table_name = id if report else table_name %}
+        <button id="export_button" type="button" onclick="generate_excel('{{ id_table_name }}', '{{ kind }}')"
+            class="border w-10 h-10 flex items-center justify-center text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" />
+                <path
+                    d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
+        {% if not report and can_access('/dynamic/import_data') %}
+            <form method="POST" class="space-y-4" id="dynamic_form"  
+                action="{{ url_for('dynamic.import_data', table_name=table_name) }}" 
+                enctype="multipart/form-data">        
+                <div class="border w-10 h-10 flex items-center justify-center text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+                    <input type="file" id="file-upload" name="archivo" class="hidden">
+                    <label for="file-upload">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 16V3M12 3L16 7.375M12 3L8 7.375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </label>                    
+                </div>    
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            </form>
+        {% endif %}
+    </div>
+</div>
+<!-- Sección de vista y búsqueda -->
+<div class="flex justify-between items-center gap-3">
+    <div class="flex space-x-2 items-center">
+        <p class="text-sm">Ver</p>
+        <select id="filter" class="form-select !w-20" x-model="view" @change="changeView()">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+    <div class="flex items-center space-x-2">
+        {% if filter_column %}
+            {% include "partials/table/system/dynamic_filter.html" %}
+        {% endif %}
+        {% if vars.date_range_search | select('in', columns) | list %}
+            <input id="dateRange" x-model="dateRange" type="text" class="form-input" placeholder="Rango de fechas...">
+        {% endif %}
+        <input id="search" x-model="searchInput" type="text" class="form-input" placeholder="Buscar...">
+    </div>
+</div>
+{% if date_variable %}
+    <script>
+        const date_variable_back={{ date_variable|tojson }};
+    </script>
+{% endif %}
+<script>
+    document.getElementById("file-upload").addEventListener("change", function () {
+        const fileNameSpan = document.getElementById("file-name");
+        const fileName = this.files[0]?.name || "No se ha seleccionado ningún archivo";
+        fileNameSpan.textContent = fileName;
+    });
+</script>

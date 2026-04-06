@@ -1,0 +1,128 @@
+{% extends 'partials/system/layout1.html' %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+{% include 'partials/table/system/breadcrumbs.html' %}
+<div class="h-[calc(100vh-366px)] sm:h-[calc(100vh-204px)]">
+    <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg flex items-center justify-between">
+        <div>
+            <h1 class="font-semibold">Rol: {{rol.nombre}}</h1>
+            <h1 class="font-semibold">Número de permisos: {{cantidad_permisos}}</h1>
+        </div>
+        <div class="flex gap-2">
+            <form method="GET" action="{{ url_for('dynamic.table_view', table_name='roles') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit"
+                    class="py-2 px-3 bg-success border border-success rounded-md text-white transition-all duration-300 hover:bg-success/[0.85] hover:border-success/[0.85]">
+                    Confirmar
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="p-5">
+        {% include 'system/access_control/tabs.html' %}
+    </div>
+
+    <div class="grid grid-cols-2 gap-5"> <!-- Cambia grid-cols-1 a grid-cols-2 -->
+        <div>
+            {% include 'system/access_control/routes_available.html' %}
+        </div>
+            <!-- Contenido -->
+        <div>
+            {% include 'system/access_control/routes_assigned.html' %}
+        </div>
+    </div>
+</div>
+<script>
+    async function reload_tables(){
+        const tableEl = document.querySelector('[x-data="tabla"]');
+        if (tableEl) {
+            const comp = Alpine.$data(tableEl);
+            if (comp?.reload) {
+                await comp.reload();
+            }
+        }
+        const tableEl2 = document.querySelector('[x-data="tabla2"]');
+        if (tableEl2) {
+            const comp = Alpine.$data(tableEl2);
+            if (comp?.reload) {
+                await comp.reload();
+            }
+        }
+    }  
+    async function addRecord(mainId, recordId, csrfToken) {
+        showLoader();
+        const url = `/access_control/add_access_to_role/${mainId}/${recordId}`;
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify({}) // you can send extra data if needed
+            });
+
+            if (response.ok) {
+                reload_tables();
+            } else {
+                alert("Error al eliminar el reigstro.");
+            }
+        } catch (error) {
+            window.dispatchEvent(new CustomEvent('show-warning', {
+                detail: 'Error al eliminar el registro'  // the message from your AJAX or backend
+            }));
+            warningAlert.style.display = 'flex';  // Show the warning message
+            warningAlert.style.opacity = '1';  // Set opacity to 1 for showing
+            setTimeout(function() {
+                warningAlert.style.opacity = '0';  // Start fading out
+                // After the fade-out animation is complete, hide the element
+                setTimeout(function() {
+                    warningAlert.style.display = 'none';
+                }, 1000);  // Match this delay with the CSS transition time (1s)
+            }, 3000);
+        }
+    }
+    async function deleteRecord(mainId, recordId, csrfToken) {
+        showLoader();
+        const url = `/access_control/delete_access_to_role/${mainId}/${recordId}`;
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify({}) // you can send extra data if needed
+            });
+
+            if (response.ok) {
+                reload_tables();
+            } else {
+                alert("Error al eliminar el reigstro.");
+            }
+        } catch (error) {
+            window.dispatchEvent(new CustomEvent('show-warning', {
+                detail: 'Error al eliminar el registro'  // the message from your AJAX or backend
+            }));
+            warningAlert.style.display = 'flex';  // Show the warning message
+            warningAlert.style.opacity = '1';  // Set opacity to 1 for showing
+            setTimeout(function() {
+                warningAlert.style.opacity = '0';  // Start fading out
+                // After the fade-out animation is complete, hide the element
+                setTimeout(function() {
+                    warningAlert.style.display = 'none';
+                }, 1000);  // Match this delay with the CSS transition time (1s)
+            }, 3000);
+        }
+    }
+</script>
+<script src="{{ url_for('static', filename='js/system/table/data-search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/data_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/loader.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/dynamic_table_init.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/format_functions.js') }}"></script>
+{% include "partials/system/loader.html" %}
+
+{% endblock content %}

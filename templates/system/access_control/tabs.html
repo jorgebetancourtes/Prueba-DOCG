@@ -1,0 +1,46 @@
+<div x-data="{activeDefTab:'todos'}">
+    <ul class="flex flex-wrap text-xs text-center dark:border-gray/20 border-b border-lightgray/10">
+        <li class="">
+            <a href="javaScript:;" @click="activeDefTab = 'todos'; $dispatch('filter-status', 'todos')"
+                :class="activeDefTab === 'todos' ? 'bg-primary/10 text-primary' : 'bg-transparent text-gray hover:bg-primary/10 hover:text-primary'"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-t-lg">
+                Todos
+            </a>
+        </li>
+        <li class="">
+            <a href="javaScript:;"
+                @click="$dispatch('filter-status', 'Módulos'); activeDefTab = 'modulos'"
+                :class="activeDefTab === 'modulos' ? 'bg-primary/10 text-primary' : 'bg-transparent text-gray hover:bg-primary/10 hover:text-primary'"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-t-lg">
+                Módulos
+            </a>
+        </li>
+        <li class="">
+            <a href="javaScript:;"
+                @click="$dispatch('filter-status', 'Acciones'); activeDefTab = 'acciones'"
+                :class="activeDefTab === 'acciones' ? 'bg-primary/10 text-primary' : 'bg-transparent text-gray hover:bg-primary/10 hover:text-primary'"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-t-lg">
+                Acciones
+            </a>
+        </li>
+        <li class="">
+            <a href="javaScript:;"
+                @click="$dispatch('filter-status', 'Flujos'); activeDefTab = 'flujos'"
+                :class="activeDefTab === 'flujos' ? 'bg-primary/10 text-primary' : 'bg-transparent text-gray hover:bg-primary/10 hover:text-primary'"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-t-lg">
+                Flujos
+            </a>
+        </li>
+        <li class="">
+            <a href="javaScript:;" 
+                @click="$dispatch('filter-status', 'Tableros y reportes'); activeDefTab = 'tableros_reportes'"
+                :class="activeDefTab === 'tableros_reportes' ? 'bg-primary/10 text-primary' : 'bg-transparent text-gray hover:bg-primary/10 hover:text-primary'"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-t-lg">
+                Tableros y reportes
+                <span>
+                    {{ tableros_reportes }}
+                </span>
+            </a>
+        </li>
+    </ul>
+</div>

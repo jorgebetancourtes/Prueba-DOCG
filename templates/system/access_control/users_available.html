@@ -1,0 +1,83 @@
+
+<!-- Elemento oculto para pasar datos al JS: nombre de tabla y columnas -->
+<div id="table-data" data-table="/access_control/data_users/available/{{rol.id}}" data-columns='{{ columnas|tojson }}'></div>
+<div class="flex flex-col ">
+    <div class="grid grid-cols-1 gap-5">
+        <div class="sticky top-0 bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg" x-data="tabla" x-init="initData(); $watch('searchInput', value => { search(value) })">
+            <div class="flex justify-between items-center gap-3">
+                <div>
+                    <h2 class="text-base font-semibold">Usuarios</h2>
+                    <span class="text-lightgray text-sm">Usuarios disponibles</span>
+                </div>
+                <div>
+                    <input id="search" x-model="searchInput" type="text" class="form-input" placeholder="Buscar...">
+                </div>
+            </div>            
+            <div class="overflow-auto table-scroll-horizontal table-scroll-vertical" style="max-height: calc(100vh - 400px);">
+                <table class="min-w-[640px] w-full table-hover">
+                    <thead class="bg-white dark:bg-dark sticky top-0 z-10">
+                        <tr>
+                            <th></th>
+                            {% for column in columnas %}
+                            <th data-column="{{ column }}">
+                                <div class="flex items-center justify-between gap-2">
+                                    <p class="font-semibold">{{ column|title_format }}</p>
+                                    <div class="flex flex-col">
+                                        <!-- Icono para ordenar ascendente -->
+                                        <svg @click="sort('{{ column }}', sorted.rule === 'asc' ? 'desc' : 'asc')"
+                                            fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                                            viewBox="0 0 24 24" stroke="currentColor"
+                                            class="h-3 w-3 cursor-pointer text-muted"
+                                            x-bind:class="{'!text-black': sorted.field === '{{ column }}' && sorted.rule === 'asc'}">
+                                            <path d="M5 15l7-7 7 7"></path>
+                                        </svg>
+                                        <!-- Icono para ordenar descendente -->
+                                        <svg @click="sort('{{ column }}', sorted.rule === 'desc' ? 'asc' : 'desc')"
+                                            fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                                            viewBox="0 0 24 24" stroke="currentColor"
+                                            class="h-3 w-3 cursor-pointer text-muted"
+                                            x-bind:class="{'!text-black': sorted.field === '{{ column }}' && sorted.rule === 'desc'}">
+                                            <path d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(record, index) in items" :key="index">
+                            <tr class="cursor-pointer hover:bg-gray-100">
+                                <!-- Botón de agregar -->
+                                <td>
+                                    <form :action="`/access_control/add_user_to_role/{{rol.id}}/${record.id}`" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">       
+                                        <button type="submit"
+                                            class="border w-10 h-10 flex items-center justify-center text-success border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-success bg-success/10">
+                                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13 7.00005L7 7.00005M7 7.00005L1 7.00005M7 7.00005L7 1M7 7.00005L7 13"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </td>   
+                                <template x-for="(col, i) in {{ columnas }}" :key="i">
+                                    <td>
+
+                                        <template x-if="col !== 'cantidad'">
+                                            <td
+                                                style="word-wrap: break-word;word-break: break-word;white-space: normal;overflow: hidden;text-overflow: ellipsis">
+                                                <span x-text="record[col] ? commafy(record[col]) : '-'"></span>
+                                            </td>
+                                        </template>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

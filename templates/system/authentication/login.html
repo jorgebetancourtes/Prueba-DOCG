@@ -1,0 +1,130 @@
+{% extends './partials/system/layout2.html' %}
+{% include "./partials/system/flash_alerts.html" %}
+{% block content %}
+
+<div class="bg-white dark:bg-dark text-dark dark:text-white bg-[url('../images/autho-light-bg.png')] dark:bg-[url('../images/autho-dark-bg.png')] bg-fixed bg-cover bg-center min-h-screen">
+	<!-- Start Content -->
+	<div class="relative">
+		<div class="md:p-10 p-6 flex items-center justify-center sm:justify-between w-full flex-wrap gap-5">
+			<a href="/" class="main-logo">
+				<!--<img src="\static\images\template\logo-light.png" class="mx-auto dark-logo h-12 logo dark:hidden" alt="logo" />
+				<img src="\static\images\template\logo-dark.png" class="mx-auto light-logo h-12 logo hidden dark:block" alt="logo" />-->
+			</a>
+			<div class="flex items-center gap-5">
+				<div class="text-lightgray hover:text-primary duration-300 md:block hidden">
+					<a href="javascript:;" x-show="$store.app.mode === 'light'" @click="$store.app.toggleMode('dark')"
+						style="display: none;">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd"
+								d="M22 11.9999C22 17.5228 17.5228 21.9999 12 21.9999C10.8358 21.9999 9.71801 21.801 8.67887 21.4352C8.24138 20.3767 8 19.2165 8 17.9999C8 15.7787 8.80467 13.7454 10.1384 12.1757C11.31 13.8813 13.2744 14.9999 15.5 14.9999C17.8615 14.9999 19.9289 13.7405 21.0672 11.8568C21.3065 11.4607 22 11.5372 22 11.9999Z"
+								fill="currentColor" />
+							<path
+								d="M2 12C2 16.3586 4.78852 20.0659 8.67887 21.4353C8.24138 20.3768 8 19.2166 8 18C8 15.7788 8.80467 13.7455 10.1384 12.1758C9.42027 11.1303 9 9.86422 9 8.5C9 6.13845 10.2594 4.07105 12.1432 2.93276C12.5392 2.69347 12.4627 2 12 2C6.47715 2 2 6.47715 2 12Z"
+								fill="currentColor" />
+						</svg>
+					</a>
+					<a href="javascript:;" x-show="$store.app.mode === 'dark'" @click="$store.app.toggleMode('light')">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path
+								d="M18 12C18 15.3137 15.3137 18 12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12Z"
+								fill="currentColor" />
+							<path fill-rule="evenodd" clip-rule="evenodd"
+								d="M12 1.25C12.4142 1.25 12.75 1.58579 12.75 2V3C12.75 3.41421 12.4142 3.75 12 3.75C11.5858 3.75 11.25 3.41421 11.25 3V2C11.25 1.58579 11.5858 1.25 12 1.25ZM1.25 12C1.25 11.5858 1.58579 11.25 2 11.25H3C3.41421 11.25 3.75 11.5858 3.75 12C3.75 12.4142 3.41421 12.75 3 12.75H2C1.58579 12.75 1.25 12.4142 1.25 12ZM20.25 12C20.25 11.5858 20.5858 11.25 21 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H21C20.5858 12.75 20.25 12.4142 20.25 12ZM12 20.25C12.4142 20.25 12.75 20.5858 12.75 21V22C12.75 22.4142 12.4142 22.75 12 22.75C11.5858 22.75 11.25 22.4142 11.25 22V21C11.25 20.5858 11.5858 20.25 12 20.25Z"
+								fill="currentColor" />
+							<g opacity="0.3">
+								<path
+									d="M4.39838 4.39838C4.69127 4.10549 5.16615 4.10549 5.45904 4.39838L5.85188 4.79122C6.14477 5.08411 6.14477 5.55898 5.85188 5.85188C5.55898 6.14477 5.08411 6.14477 4.79122 5.85188L4.39838 5.45904C4.10549 5.16615 4.10549 4.69127 4.39838 4.39838Z"
+									fill="currentColor" />
+								<path
+									d="M19.6009 4.39864C19.8938 4.69153 19.8938 5.16641 19.6009 5.4593L19.2081 5.85214C18.9152 6.14503 18.4403 6.14503 18.1474 5.85214C17.8545 5.55924 17.8545 5.08437 18.1474 4.79148L18.5402 4.39864C18.8331 4.10575 19.308 4.10575 19.6009 4.39864Z"
+									fill="currentColor" />
+								<path
+									d="M18.1474 18.1474C18.4403 17.8545 18.9152 17.8545 19.2081 18.1474L19.6009 18.5402C19.8938 18.8331 19.8938 19.308 19.6009 19.6009C19.308 19.8938 18.8331 19.8938 18.5402 19.6009L18.1474 19.2081C17.8545 18.9152 17.8545 18.4403 18.1474 18.1474Z"
+									fill="currentColor" />
+								<path
+									d="M5.85188 18.1477C6.14477 18.4406 6.14477 18.9154 5.85188 19.2083L5.45904 19.6012C5.16615 19.8941 4.69127 19.8941 4.39838 19.6012C4.10549 19.3083 4.10549 18.8334 4.39838 18.5405L4.79122 18.1477C5.08411 17.8548 5.55898 17.8548 5.85188 18.1477Z"
+									fill="currentColor" />
+							</g>
+						</svg>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="min-h-[calc(100vh-192px)] p-7 flex justify-center items-center">
+			<div class="sm:p-[60px] p-9 border-2 border-gray/10 dark:border-gray/20 bg-white/10 dark:bg-white/[0.02] backdrop-blur-3xl max-w-[620px] mx-auto rounded-lg w-full">
+				<p class="text-3xl font-semibold">Iniciar sesión</p>
+				<form class="space-y-5" method="post" action="/authentication/login_submit">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">       
+					<div class="relative">
+						<input type="email" id="correo_electronico" name="correo_electronico"
+							class="form-input h-[66px] bg-transparent dark:bg-transparent text-base rounded-[10px] ps-5 pe-14"
+							placeholder="Correo electrónico">
+						<span class="text-primary absolute right-5 top-1/2 -translate-y-1/2">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path opacity="0.3"
+									d="M14.2 3H9.8C5.65164 3 3.57746 3 2.28873 4.31802C1 5.63604 1 7.75736 1 12C1 16.2426 1 18.364 2.28873 19.682C3.57746 21 5.65164 21 9.8 21H14.2C18.3484 21 20.4225 21 21.7113 19.682C23 18.364 23 16.2426 23 12C23 7.75736 23 5.63604 21.7113 4.31802C20.4225 3 18.3484 3 14.2 3Z"
+									fill="currentColor"></path>
+								<path
+									d="M19.1284 8.034C19.4784 7.74231 19.5257 7.22209 19.234 6.87206C18.9423 6.52204 18.4221 6.47474 18.0721 6.76643L15.6973 8.74542C14.671 9.60063 13.9585 10.1925 13.357 10.5794C12.7747 10.9539 12.3798 11.0796 12.0002 11.0796C11.6206 11.0796 11.2258 10.9539 10.6435 10.5794C10.0419 10.1925 9.32941 9.60063 8.30315 8.74542L5.92837 6.76643C5.57834 6.47474 5.05812 6.52204 4.76643 6.87206C4.47474 7.22209 4.52204 7.74231 4.87206 8.034L7.28821 10.0475C8.2632 10.86 9.05344 11.5185 9.75091 11.9671C10.4775 12.4344 11.185 12.7296 12.0002 12.7296C12.8154 12.7296 13.523 12.4344 14.2495 11.9671C14.947 11.5185 15.7372 10.86 16.7122 10.0474L19.1284 8.034Z"
+									fill="currentColor"></path>
+							</svg>
+						</span>
+					</div>
+					<div class="relative">
+						<input type="password" id="contrasena" name="contrasena"
+							class="form-input h-[66px] bg-transparent dark:bg-transparent text-base rounded-[10px] ps-5 pe-14"
+							placeholder="Contraseña/Código Único">
+						
+						<!-- Eye icon (hoverable) -->
+						<span id="hoverEye"
+							class="absolute right-5 top-1/2 -translate-y-1/2 text-primary cursor-pointer">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+							<path opacity="0.3"
+								d="M2 12C2 13.6394 2.42496 14.1915 3.27489 15.2957C4.97196 17.5004 7.81811 20 12 20C16.1819 20 19.028 17.5004 20.7251 15.2957C21.575 14.1915 22 13.6394 22 12C22 10.3606 21.575 9.80853 20.7251 8.70433C19.028 6.49956 16.1819 4 12 4C7.81811 4 4.97196 6.49956 3.27489 8.70433C2.42496 9.80853 2 10.3606 2 12Z"
+								fill="currentColor"></path>
+							<circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+							</svg>
+						</span>
+					</div>
+					<div class="space-y-3">
+					<div class="text-center">
+						<a href="/authentication/forgotpassword" class="hover:text-primary duration-300">¿Olvidaste tu contraseña?</a>
+					</div>						
+					<!-- Existing password login -->
+					<button type="submit"
+						class="btn bg-primary py-4 uppercase tracking-widest font-bold text-sm rounded-[10px] text-white w-full hover:bg-primary/90 duration-300">
+						Iniciar Sesión
+					</button>
+					<div class="flex gap-3">
+					<button type="button" id="passkeyLoginBtn"
+						class="flex gap-3 items-center justify-center btn border border-primary text-primary py-4 uppercase tracking-widest font-bold text-sm rounded-[10px] w-full hover:bg-primary/10 duration-300 p-2">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.3142 3.68576L20.8446 3.15543L20.3142 3.68576ZM20.3142 11.8253L20.8446 12.3557L20.3142 11.8253ZM10.4547 10.057L9.92432 9.52663L9.92432 9.52663L10.4547 10.057ZM7.36124 13.1504L7.89157 13.6807H7.89157L7.36124 13.1504ZM10.8496 16.6388L10.3193 16.1084L10.3193 16.1084L10.8496 16.6388ZM13.9433 13.5451L13.4129 13.0148L13.9433 13.5451ZM7.00755 14.1587L6.26214 14.2415L6.26214 14.2415L7.00755 14.1587ZM7.20094 15.8992L6.45553 15.982L6.45553 15.982L7.20094 15.8992ZM8.10084 16.7991L8.01802 17.5445L8.01802 17.5445L8.10084 16.7991ZM9.84133 16.9924L9.92416 16.247H9.92416L9.84133 16.9924ZM7.43673 16.3898L7.96707 15.8594L7.96706 15.8594L7.43673 16.3898ZM7.61025 16.5633L7.07991 17.0936L7.07992 17.0936L7.61025 16.5633ZM10.6703 9.1926L9.94383 9.37914L9.94383 9.37914L10.6703 9.1926ZM14.8074 13.3297L14.6209 14.0562H14.6209L14.8074 13.3297ZM10.9532 13.6303C10.6587 13.339 10.1838 13.3416 9.89252 13.6361C9.60124 13.9306 9.60385 14.4055 9.89835 14.6967L10.9532 13.6303ZM15.5185 8.48151C15.1605 8.12353 15.1605 7.54313 15.5185 7.18515L14.4578 6.12449C13.5141 7.06826 13.5141 8.59841 14.4578 9.54217L15.5185 8.48151ZM16.8148 8.48151C16.4569 8.83949 15.8765 8.83949 15.5185 8.48151L14.4578 9.54217C15.4016 10.4859 16.9317 10.4859 17.8755 9.54217L16.8148 8.48151ZM16.8148 7.18515C17.1728 7.54313 17.1728 8.12353 16.8148 8.48151L17.8755 9.54217C18.8193 8.59841 18.8193 7.06826 17.8755 6.12449L16.8148 7.18515ZM17.8755 6.12449C16.9317 5.18072 15.4016 5.18072 14.4578 6.12449L15.5185 7.18515C15.8765 6.82717 16.4569 6.82717 16.8148 7.18515L17.8755 6.12449ZM19.7839 4.21609C21.7387 6.17088 21.7387 9.34021 19.7839 11.295L20.8446 12.3557C23.3851 9.81509 23.3851 5.696 20.8446 3.15543L19.7839 4.21609ZM20.8446 3.15543C18.304 0.614857 14.1849 0.614857 11.6443 3.15543L12.705 4.21609C14.6598 2.2613 17.8291 2.2613 19.7839 4.21609L20.8446 3.15543ZM9.92432 9.52663L6.83091 12.62L7.89157 13.6807L10.985 10.5873L9.92432 9.52663ZM11.38 17.1691L12.4136 16.1354L11.353 15.0748L10.3193 16.1084L11.38 17.1691ZM12.4136 16.1354L14.4736 14.0754L13.4129 13.0148L11.353 15.0748L12.4136 16.1354ZM6.26214 14.2415L6.45553 15.982L7.94635 15.8163L7.75296 14.0758L6.26214 14.2415ZM8.01802 17.5445L9.75851 17.7379L9.92416 16.247L8.18367 16.0536L8.01802 17.5445ZM6.9064 16.9201L7.07991 17.0936L8.14058 16.0329L7.96707 15.8594L6.9064 16.9201ZM8.18367 16.0536C8.16736 16.0518 8.15217 16.0445 8.14058 16.0329L7.07992 17.0936C7.33236 17.346 7.6632 17.505 8.01802 17.5445L8.18367 16.0536ZM6.45553 15.982C6.49495 16.3368 6.65396 16.6676 6.9064 16.9201L7.96706 15.8594C7.95547 15.8478 7.94816 15.8326 7.94635 15.8163L6.45553 15.982ZM10.3193 16.1084C10.2155 16.2122 10.0701 16.2633 9.92416 16.247L9.75851 17.7379C10.3573 17.8044 10.9539 17.5951 11.38 17.1691L10.3193 16.1084ZM6.83091 12.62C6.40488 13.0461 6.1956 13.6427 6.26214 14.2415L7.75296 14.0758C7.73675 13.9299 7.78775 13.7845 7.89157 13.6807L6.83091 12.62ZM11.3967 9.00605C10.9704 7.34603 11.4077 5.51341 12.705 4.21609L11.6443 3.15543C9.95676 4.84301 9.3911 7.22673 9.94383 9.37914L11.3967 9.00605ZM19.7839 11.295C18.4866 12.5923 16.654 13.0296 14.9939 12.6033L14.6209 14.0562C16.7733 14.6089 19.157 14.0432 20.8446 12.3557L19.7839 11.295ZM14.4736 14.0754C14.4807 14.0684 14.4935 14.0591 14.5182 14.0532C14.5444 14.047 14.5805 14.0458 14.6209 14.0562L14.9939 12.6033C14.4675 12.4681 13.8509 12.5768 13.4129 13.0148L14.4736 14.0754ZM10.985 10.5873C11.4227 10.1495 11.532 9.53285 11.3967 9.00605L9.94383 9.37914C9.95415 9.41931 9.95302 9.45541 9.94673 9.48175C9.94081 9.50657 9.93144 9.51951 9.92432 9.52663L10.985 10.5873ZM12.4107 15.0719L10.9532 13.6303L9.89835 14.6967L11.3559 16.1383L12.4107 15.0719Z" fill="currentColor"/>
+                            <path d="M22 14.993C21.9361 17.787 21.6692 19.419 20.5542 20.5341C19.0882 22 16.7288 22 12.0101 22C7.29127 22 4.93188 22 3.46594 20.5341C2 19.0681 2 16.7087 2 11.9899C2 7.27117 2 4.91177 3.46594 3.44584C4.58099 2.33078 6.21298 2.06388 9.00704 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+							Passkey
+					</button>
+					<button  type="button" id="onetimecodeLoginBtn"
+						class="flex gap-3 items-center justify-center btn border border-primary text-primary py-4 uppercase tracking-widest font-bold text-sm rounded-[10px] w-full hover:bg-primary/10 duration-300 p-2">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z" stroke="currentColor" stroke-width="1.5"/>
+							<path d="M12.0002 10V14M10.2678 11L13.7319 13M13.7317 11L10.2676 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+							<path d="M6.73266 10V14M5.00023 11L8.46434 13M8.4641 11L5 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+							<path d="M17.2681 10V14M15.5356 11L18.9997 13M18.9995 11L15.5354 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+							</svg>
+							Código Único
+					</button>					
+					</div>
+
+					</div>
+				</form>
+			</div>
+		</div>
+                    {% include "./partials/system/footer2.html" %}
+
+	</div>
+	<!-- End Content -->
+</div>
+<script src="{{ url_for('static', filename='js/system/login.js') }}"></script>
+
+{% endblock content %}

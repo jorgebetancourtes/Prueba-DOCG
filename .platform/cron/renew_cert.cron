@@ -1,0 +1,1 @@
+0 0,12 * * * root certbot renew --quiet --post-hook "systemctl restart nginx"

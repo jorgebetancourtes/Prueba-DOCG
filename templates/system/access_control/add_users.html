@@ -1,0 +1,41 @@
+{% extends 'partials/system/layout1.html' %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+{% include 'partials/table/system/breadcrumbs.html' %}
+<div class="h-[calc(100vh-366px)] sm:h-[calc(100vh-204px)]">
+    <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg flex items-center justify-between">
+        <div>
+            <h1 class="font-semibold">Rol: {{rol.nombre}}</h1>
+            <h1 class="font-semibold">Número de usuarios: {{cantidad_usuarios}}</h1>
+        </div>
+        <div class="flex gap-2">
+            <form method="GET" action="{{ url_for('dynamic.table_view', table_name='roles') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit"
+                    class="py-2 px-3 bg-success border border-success rounded-md text-white transition-all duration-300 hover:bg-success/[0.85] hover:border-success/[0.85]">
+                    Confirmar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-5 pt-5"> <!-- Cambia grid-cols-1 a grid-cols-2 -->
+        <div>
+            {% include 'system/access_control/users_available.html' %}
+        </div>
+            <!-- Contenido -->
+        <div>
+            {% include 'system/access_control/users_assigned.html' %}
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/system/table/data-search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/data_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/loader.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/dynamic_table_init.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/format_functions.js') }}"></script>
+{% include "partials/system/loader.html" %}
+
+{% endblock content %}

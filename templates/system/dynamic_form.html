@@ -1,0 +1,281 @@
+{% extends './partials/system/layout1.html' %}
+<!-- templates/dynamic_form.html -->
+{% block content %}
+{% include './partials/system/alerts.html' %}
+<!-- Breadcrumb -->
+{% include 'partials/table/system/breadcrumbs.html' %}
+{% import 'variables.html' as vars %}
+<div class="flex flex-col gap-5  h-[calc(100vh-188px)] sm:h-[calc(100vh-204px)]" >
+    <div class="grid grid-cols-1 gap-5">
+                    <!-- Título del form -->
+            <h2 class="text-base font-semibold">
+                {{ action }} en {{ table_name|title_format }}
+            </h2>
+        <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 px-5 rounded-lg overflow-y-auto" style="max-height: calc(100vh - 240px);">
+            <!-- form -->
+            <form method="POST" class="space-y-4" id="dynamic_form"  
+                action="{{ url_for('dynamic.edit', table_name=table_name, id=record.id,form_action=form_action) if record else url_for('dynamic.add', table_name=table_name, id_parent_record=id_parent_record, parent_table=parent_table) }}" 
+                enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                {% for column in columns %}
+                    {% if column != "id" and table_name != "archivos" %}
+                    <div class="space-y-2">
+                        <label for="{{ column|title_format }}" class="text-sm text-lightgray capitalize">
+                            {{ column|title_format }}
+                            {% if column in required_fields %}
+                                <span class="text-red-500">*</span>
+                            {% endif %}
+                        </label>
+                        <br>
+                        {% if foreign_options is defined and column in foreign_options %}
+                        <!-- Multi - Select --> 
+                            {% if column in many_to_many_data%}
+                                {% for field, data in many_to_many_data.items() %}
+                                    <select id="{{ field }}" name="{{ field }}" class="js-example-basic-multiple"  multiple {% if column in required_fields %} required {% endif %}>
+                                        {% for option in data.options %}
+                                            <option value="{{ option.id }}" {% if option.id in data.selected %} selected {% endif %}>
+                                             {% if vars[column] is defined %}
+                                                 {{ vars[column](option) }}
+                                             {% else %}
+                                                 {{option.nombre or option.nombre_completo or option.nombre_empresa or option.id_visualizacion }}
+                                             {% endif %}                                            
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                {% endfor %}
+                            {% elif column in multiple_choice_data %}
+                                {% for field, data in multiple_choice_data.items() %}
+                                    <select id="{{ field }}" name="{{ field }}" class="js-example-basic-multiple"  multiple {% if column in required_fields %} required {% endif %}>
+                                        {% for option in data.options %}
+                                            <option value="{{ option }}" {% if option in record[field] %} selected {% endif %}>
+                                                {{ option }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                {% endfor %}
+                            {%else%}
+                                <select id="{{ column }}" name="{{ column }}" class="searchable-select" {% if column in required_fields %} required {% endif %}
+                                    {% if not record and default_variable_values.get(column) and default_variable_values.get(column)!='None' and default_variable_values.get(column)!='No'  %} disabled {% endif %}>
+                                    <option value="">
+                                        Selecciona una opción
+                                    </option>
+                                    {% for option in foreign_options[column] %}
+                                         <!-- Opciones de select dentro de foreign options que no sean de otras bases-->
+                                        {% if column in vars.columns_foreign_options %}
+                                            <option value="{{ option }}" {% if record and record[column] == option %}selected{% endif %} {% if default_variable_values[column] == option %}selected{% endif %}>
+                                                {{ option }}
+                                            </option>
+                                         <!-- Opciones de select dentro de foreign options que sean de otras bases-->
+                                        {% else %}
+                                            <option value="{{ option.id }}"
+                                                {% if (record and record[column] == option.id) 
+                                                or (default_variable_values and (default_variable_values.get(column) | string) == (option.id | string)) %}
+                                                selected
+                                                {% endif %}
+                                                {% if form_filters[column] %}
+                                                    data-filter="{{ option[form_filters[column]] }}"
+                                                {% endif %}
+                                                >
+                                                {% if vars[column] is defined %}
+                                                    {{ vars[column](option) }}
+                                                {% else %}
+                                                    {{option.nombre or option.nombre_completo or option.nombre_empresa or option.id_visualizacion }}
+                                                {% endif %}
+                                            </option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            {%endif%}
+                        <!-- Select -->
+                        {% else %}
+                            {% if "ejemplo_select_multiple" in column %}
+                                <!-- Renderizar el campo como un select multiple -->
+                                <select name="{{ column }}"  id="{{ column  }}" class="js-example-basic-multiple" multiple="multiple" {% if column in required_fields %} required {% endif %}>
+                                </select>
+                            {% else %}
+                                {% if column in vars.date_time_columns %}
+                                    <input type="datetime-local" id="{{ column }}" name="{{ column }}" value="{{ (record[column] | local_time) if record else default_variable_values[column] }}" class="form-input rounded-lg" style="width:40%" {% if column in required_fields %} required {% endif %}>
+                                {% elif "fecha" in column or column in date_columns %}
+                                    <!-- Campo de fecha -->
+                                    <input type="date" id="{{ column }}" name="{{ column }}" value="{{record[column] if record else default_variable_values[column] }}" class="form-input rounded-lg date-responsive" {% if column in required_fields %} required {% endif %}>
+                                    {% elif column in vars.time_columns %}
+                                    <input type="time" id="{{ column }}" name="{{ column }}" value="{{record[column] if record else default_variable_values[column] }}" class="form-input rounded-lg date-responsive" {% if column in required_fields %} required {% endif %}>
+                                {% elif ("archivo" in column or column in vars.file_columns) and table_name != "archivos"%}
+                                    <div class="flex items-center gap-2 mt-4" data-file-widget>
+                                        <input type="file" id="file-upload_{{ column }}" name="{{ column }}" class="hidden" data-file-input>
+                                        <label for="file-upload_{{ column }}"
+                                            class="btn flex items-center gap-2 bg-primary border border-primary rounded-md text-white transition-all duration-300 hover:bg-primary/[0.85] hover:border-primary/[0.85] cursor-pointer">
+                                            Seleccionar archivo
+                                        </label>
+                                        <span  class="file-name text-gray-500 ml-2" data-file-name>
+                                            {{(record[column].split('__')[1] if record and record[column] is not none else 'No se ha seleccionado ningún archivo')}}
+                                        </span>
+                                        <button type="button" data-delete-file
+                                            class="flex items-center justify-center text-red-500 hover:text-red-700 p-2 rounded-full hover:opacity-80 rotate-0 hover:rotate-180 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+                                                <path
+                                                    d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z"
+                                                    fill="currentColor"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                {% elif column in vars.money_format_columns %}
+                                    <label class="flex">
+                                        <div class="flex items-center justify-center rounded-l border-r-0 border-2 border-gray/10 bg-gray/[8%] dark:border-lightgray/20 dark:text-white dark:bg-lightgray/10 px-3.5">
+                                            <span>$</span>
+                                        </div>
+                                        <input  type="text" inputmode="decimal" id="{{ column }}" name="{{ column }}" value="{{ (record[column] if record and record[column] is not none else '') if record else default_variable_values[column] }}" class="form-input rounded-r rounded-none number-format" {% if column in required_fields %} required {% endif %}/>                               
+                                    </label>                                
+                                {% elif column in vars.percentage_format_columns %}
+                                   <label class="flex">
+                                        <input type="number" step="any" id="{{ column }}" name="{{ column }}" value="{{ (record[column] if record and record[column] is not none else '') if record else default_variable_values[column] }}" class="form-input rounded-l rounded-none" {% if column in required_fields %} required {% endif %}/>
+                                        <div class="flex items-center justify-center rounded-r border-l-0 border-2 border-gray/10 bg-gray/[8%] dark:border-lightgray/20 dark:text-white dark:bg-lightgray/10 px-3.5">
+                                            <span>%</span>
+                                        </div>                                           
+                                    </label>    
+                                {% elif column in vars.number_columns %}
+                                    <input type="number" step="any" id="{{ column }}" name="{{ column }}" value="{{ (record[column] if record and record[column] is not none else '') if record else default_variable_values[column] }}"class="form-input rounded-lg" {% if column in required_fields %} required {% endif %}>
+                                {% elif column in vars.input_multiple_select %}
+                                    <select id="{{ column }}" name="{{ column }}" multiple="multiple" style="width:100%">
+                                        {% if record and record[column] %}
+                                            {% for value in record[column] %}
+                                                <option value="{{ value }}" selected>{{ value }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select> 
+                                {% elif 'telefono' in column|lower or 'celular' in column|lower %}
+                                    <div class="flex gap-2">
+                                        <select class="form-input rounded-lg w-24" id="lada">
+                                            <option value="+52">+52</option>
+                                            <option value="+1">+1</option>
+                                            <option value="+34">+34</option>
+                                        </select>
+
+                                        <input 
+                                            type="tel"
+                                            class="form-input rounded-lg flex-1"
+                                            placeholder="Número"
+                                            pattern="[0-9]{10}"
+                                            maxlength="10"
+                                            oninput="this.nextElementSibling.value = document.getElementById('lada').value + this.value"
+                                            value="{{
+                                                (
+                                                    record[column][3:] 
+                                                    if record and record[column] and record[column].startswith('+52')
+                                                    else record[column] 
+                                                    if record and record[column]
+                                                    else default_variable_values.get(column, '')
+                                                )
+                                            }}"
+                                        >
+
+                                    <input type="hidden" id="{{ column }}" name="{{ column }}" value="{{ (record[column] if record and record[column] is not none else '') if record else default_variable_values[column] }}"class="form-input rounded-lg" {% if column in required_fields %} required {% endif %}>
+                                    </div>
+                                {% else %}
+                                    <input type="text" id="{{ column }}" name="{{ column }}" value="{{ (record[column] if record and record[column] is not none else '') if record else default_variable_values[column] }}"class="form-input rounded-lg" {% if column in required_fields %} required {% endif %}>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                {% if table_name == "archivos" %}
+                    <div class="flex flex-col gap-3 mt-4">
+                        <label for="nombre" class="text-sm text-lightgray capitalize"> Nombre<span class="text-red-500">*</span></label>                
+                        {% if parent_table in vars.tipo_archivos %}
+                            <select id="nombre" name="nombre" class="searchable-select" required>
+                                <option value="">
+                                    Selecciona una opción
+                                </option>
+                                {% for option in foreign_options['tipo_archivos_'~ parent_table] %}
+                                    <option value="{{ option }}">
+                                        {{ option }}
+                                    </option>
+                                {% endfor %}
+                            </select>                        
+                        {% else %}
+                            <input type="text" id="nombre" name="nombre" class="form-input rounded-lg"  required>
+                        {% endif %}
+                        <div class="flex items-center gap-2 mt-4">
+                            <input type="file" id="file-upload" name="archivo" class="hidden">
+                            <label for="file-upload"
+                                class="btn flex items-center gap-2 bg-primary border border-primary rounded-md text-white transition-all duration-300 hover:bg-primary/[0.85] hover:border-primary/[0.85] cursor-pointer">
+                                Seleccionar archivo
+                            </label>
+                            <span id="file-name" class="file-name text-gray-500 ml-2">
+                                No se ha seleccionado ningún archivo
+                            </span>
+                            <button type="button" id="delete-file-btn"
+                                class="flex items-center justify-center text-red-500 hover:text-red-700 p-2 rounded-full hover:opacity-80 rotate-0 hover:rotate-180 transition-all duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+                                    <path
+                                        d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Botones de acción -->
+                <div class="flex items-center gap-4 p-5 pt-0">
+                    <button type="submit"
+                        class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+                        Guardar
+                    </button>
+                <a href="{{ session.get('return_url', url_for('dynamic.table_view', table_name=table_name)) }}"
+                    class="btn border text-danger border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-danger bg-danger/10">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const filters = {{ form_filters | tojson }};
+    const allow_new_value_dropdowns={{ vars.allow_new_value_dropdowns | tojson }};  
+    const input_multiple_select={{ vars.input_multiple_select | tojson }};  
+    $(document).ready(function () {
+        if (Array.isArray(input_multiple_select)) {
+            input_multiple_select.forEach(function (inputId) {
+                $('#' + inputId).select2({
+                    tags: true,
+                    tokenSeparators: [',', ' '],
+                    placeholder: "Correos",
+                    width: '100%'
+                });
+
+            });
+        }
+    });
+</script>
+<script src="{{ url_for('static', filename='js/system/form/filter_dropdowns.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/form/fill_inputs_url.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/form/upload_files.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/form/select2.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/show_alert.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/form/number_format.js') }}"></script>
+
+{% if record %}
+    <script>
+        const record_edit = {{ record.id | tojson }};
+    </script>
+{% else %}
+    <script>
+        const record_edit = '';
+    </script>
+{% endif %}
+{% if parent_record %}
+    <script>
+        const parent_record = {{ parent_record | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/system/form/autoselect_parent_record.js') }}"></script>
+{% endif %}
+{% if javascript and record %}
+    <script src="{{ url_for('static', filename='js/form_logic/edit/' ~ table_name ~ '.js') }}"></script>
+{% elif javascript %}
+    <script src="{{ url_for('static', filename='js/form_logic/add/' ~ table_name ~ '.js') }}"></script>
+{% endif %}
+
+{% endblock content %}

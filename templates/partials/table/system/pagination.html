@@ -1,0 +1,36 @@
+<!-- Paginación -->
+<ul id="pagination" class="inline-flex items-center gap-1">
+    <li>
+        <button type="button" @click.prevent="changePage(1)"
+            class="flex justify-center px-2 h-9 items-center rounded transition border border-gray/20 hover:border-gray/60">
+            Primera
+        </button>
+    </li>
+    <li>
+        <button type="button" @click="changePage(pagination.currentPage - 1)"
+            class="flex justify-center px-2 h-9 items-center rounded transition border border-gray/20 hover:border-gray/60">
+            Anterior
+        </button>
+    </li>
+    <template x-for="item in pages" :key="item">
+        <li>
+            <button @click="changePage(item)" type="button"
+                class="flex justify-center h-9 w-9 items-center rounded transition border border-gray/20 hover:border-gray/60"
+                :class="{ 'border-primary text-primary': pagination.currentPage === item }">
+                <span x-text="item"></span>
+            </button>
+        </li>
+    </template>
+    <li>
+        <button @click="changePage(pagination.currentPage + 1)" type="button"
+            class="flex justify-center px-2 h-9 items-center rounded transition border border-gray/20 hover:border-gray/60">
+            Siguiente
+        </button>
+    </li>
+    <li>
+        <button @click.prevent="changePage(pagination.lastPage)" type="button"
+            class="flex justify-center px-2 h-9 items-center rounded transition border border-gray/20 hover:border-gray/60">
+            Última
+        </button>
+    </li>
+</ul>

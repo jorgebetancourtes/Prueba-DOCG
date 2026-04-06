@@ -1,0 +1,47 @@
+<div class="flex justify-end items-center gap-2" x-data x-show="true">
+    {% if can_access('/dynamic/ordenes_de_compra') %}
+    <template x-if="$store.modalData.getField('estatus') === 'En revisión'">
+        <button type="submit"
+            @click.stop.prevent="window.location.href = `/dynamic/ordenes_de_compra/double_table/view/${encodeURIComponent($store.modalData.getField('id'))}?return_url=${encodeURIComponent(window.location.href)}`"
+            class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Productos
+        </button>
+    </template>
+    {% endif %}
+    {% if can_access('/ordenes_de_compra/aprobar') %}
+    <template x-if="$store.modalData.getField('estatus') === 'En revisión'">
+        <button type="submit"
+            @click.stop.prevent="window.location.href = `/ordenes_de_compra/aprobar/${encodeURIComponent($store.modalData.getField('id'))}?return_url=${encodeURIComponent(window.location.href)}`"
+            class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Aprobar
+        </button>
+    </template>
+    {% endif %}
+    {% if can_access('/ordenes_de_compra/recibir') %}
+    <template x-if="['Recibida parcial', 'Aprobada'].includes($store.modalData.getField('estatus'))">
+        <button type="submit"
+            @click.stop.prevent="window.location.href = `/ordenes_de_compra/recibir/${encodeURIComponent($store.modalData.getField('id'))}?return_url=${encodeURIComponent(window.location.href)}`"
+            class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Recibida
+        </button>
+    </template>
+    {% endif %}
+    {% if can_access('/ordenes_de_compra/finalizar') %}
+    <template x-if="['Recibida parcial', 'Recibida'].includes($store.modalData.getField('estatus'))">
+        <button type="submit"
+            @click.stop.prevent="window.location.href = `/ordenes_de_compra/finalizar/${encodeURIComponent($store.modalData.getField('id'))}?return_url=${encodeURIComponent(window.location.href)}`"
+            class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Finalizar
+        </button>
+    </template>
+    {% endif %}
+    {% if can_access('/ordenes_de_compra/cancelar') %}
+    <template x-if="['En revisión', 'Aprobada'].includes($store.modalData.getField('estatus'))">
+        <button type="submit"
+            @click.stop.prevent="window.location.href = `/ordenes_de_compra/cancelar/${encodeURIComponent($store.modalData.getField('id'))}?return_url=${encodeURIComponent(window.location.href)}`"
+            class="btn border text-danger border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-danger bg-primary/10">
+            Cancelar
+        </button>
+    </template>
+    {% endif %}
+</div>

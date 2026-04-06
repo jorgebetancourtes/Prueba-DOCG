@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        .email-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #4b7cbd;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            max-width: 150px;
+        }
+
+        .header h1 {
+            color: #4b7cbd;
+            margin: 10px 0;
+            font-size: 24px;
+        }
+
+        .email-body {
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        .email-body p {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .email-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Lista de detalles mejorada */
+        .details-section {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-left: 4px solid #4b7cbd;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .details-title {
+            color: #4b7cbd;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+
+        .details-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .details-list li:before {
+            content: "▸";
+            color: #4b7cbd;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* Botón de acción mejorado */
+        .action-button {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .action-button a {
+            display: inline-block;
+            background-color: #4b7cbd;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-button a:hover {
+            background-color: #3a6ba5;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Footer mejorado */
+        .footer {
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            margin-top: 30px;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .footer a {
+            color: #4b7cbd;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #3a6ba5;
+            text-decoration: underline;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .email-container {
+                padding: 15px;
+                max-width: 100%;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .action-button a {
+                display: block;
+                margin: 10px auto;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <!--<img src="https://url_app/static/images/logo-light.png">-->
+            <h1>Prueba DOCG - RGV</h1>
+        </div>
+
+        <!-- Cuerpo del email -->
+        <div class="email-body">
+            <p>Hola,</p>
+            <p>{{ body_content | safe }}</p>
+
+            <!-- Lista de detalles -->
+            {% if details_list %}
+            <div class="details-section">
+                <div class="details-title">Detalles</div>
+                <ul class="details-list">
+                    {% for detail in details_list %}
+                    <li>{{ detail | safe }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Nuevo bloque para el botón/enlace -->
+            {% if link_url and link_text %}
+            <div class="action-button">
+                <a href="{{ link_url }}">{{ link_text }}</a>
+            </div>            
+            {% endif %}
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Prueba DOCG</strong></p>
+            <p>RGV</p>
+        </div>
+    </div>
+</body>
+
+</html>

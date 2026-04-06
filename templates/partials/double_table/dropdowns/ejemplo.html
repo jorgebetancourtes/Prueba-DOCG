@@ -1,0 +1,15 @@
+<template x-if="{{ edit_fields }}.includes(col) && ['porcentaje_utilizado'].includes(col)">
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <select :id="col + '_' + record.id"  :name="col" class="searchable-select" x-model="record[col]" >
+            <option value="" >
+                    Selecciona una opción
+                </option>
+            {% for option in foreign_options['porcentaje_utilizado'] %}
+                <option value="{{ option }}" >
+                    {{ option }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</template>   

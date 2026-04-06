@@ -1,0 +1,14 @@
+*.xlsx
+__pycache__/
+*.DS_Store
+flask_session/
+venv/
+.env
+.flaskenv
+migrations/
+migrations_local/
+.python-version
+
+// py -3.13 -m venv venv
+// venv\Scripts\activate          
+(venv) PS C:\Users\Jorge Betancourt\Downloads\Plantilla-Web-Apps-Flask-main\Plantilla-Web-Apps-Flask-main> 

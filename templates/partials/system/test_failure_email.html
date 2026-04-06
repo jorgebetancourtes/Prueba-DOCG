@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de pruebas</title>
+</head>
+
+<body>
+    <h1 style="color: #d9534f;">⚠️ Fallos en pruebas automatizadas</h1>
+    <p>Hola,</p>
+    <p>{{ body_content }}</p>
+    <ul>
+        {% for detail in details_list %}
+        <li>{{ detail }}</li>
+        {% endfor %}
+    </ul>
+    <p>Por favor, revisar y solucionar a la brevedad.</p>
+    <p>Atentamente,<br>{{ sender_name }}</p>
+</body>
+
+</html>

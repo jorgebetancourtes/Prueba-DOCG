@@ -1,0 +1,579 @@
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<style>
+    /* Hide header actions when AI search is active (mobile only) */
+    @media (max-width: 640px) {
+        .ai-active #headerActions {
+            display: none !important;
+        }
+        .ai-active #headerActions2 {
+            display: none !important;
+        }        
+
+        .ai-active #consultaForm {
+            width: 100% !important;
+        }
+    }    
+    /* ========== SELECT2 CUSTOM STYLES ========== */
+
+    /* Container principal */
+    .select2-container {
+        font-size: 0.875rem;
+    }
+
+    /* Selection box (el campo visible) */
+    .select2-container--default .select2-selection--single {
+        height: 42px !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.5rem !important;
+        padding: 6px 12px !important;
+        background-color: #f4f5f7 !important;
+        transition: all 0.2s ease;
+    }
+
+    .dark .select2-container--default .select2-selection--single {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #e2e8f0 !important;
+    }
+
+    /* Focus state */
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--single {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+
+    /* Selected text */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #374151;
+        line-height: 26px !important;
+        padding-left: 0 !important;
+    }
+
+    .dark .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #e2e8f0 !important;
+    }
+
+    /* Placeholder */
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #9ca3af !important;
+    }
+
+    /* Arrow */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 40px !important;
+        right: 8px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #6b7280 transparent transparent transparent !important;
+        border-width: 6px 5px 0 5px !important;
+        margin-left: -5px !important;
+        margin-top: -3px !important;
+    }
+
+    /* Dropdown */
+    .select2-dropdown {
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.5rem !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+        margin-top: 2px !important;
+        background-color: #f4f5f7 !important;
+    }
+
+    .dark .select2-dropdown {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+
+    /* Search box */
+    .select2-search--dropdown {
+        padding: 12px !important;
+        background: #f3f4f6 !important;
+    }
+
+    .dark .select2-search--dropdown {
+        background: #0f172a !important;
+    }
+
+    .select2-search--dropdown .select2-search__field {
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.5rem !important;
+        padding: 6px 12px !important;
+        font-size: 0.875rem !important;
+        width: 100% !important;
+        background-color: #ffffff !important;
+    }
+
+    .dark .select2-search--dropdown .select2-search__field {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #e2e8f0 !important;
+    }
+
+    .select2-search--dropdown .select2-search__field:focus {
+        border-color: #3b82f6 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+
+    /* Results */
+    .select2-results {
+        max-height: 250px !important;
+    }
+
+    .select2-results__options {
+        padding: 4px 0 !important;
+    }
+
+    .select2-results__option {
+        padding: 6px 12px !important;
+        font-size: 0.875rem !important;
+        color: #374151 !important;
+        transition: all 0.15s ease !important;
+    }
+
+    .dark .select2-results__option {
+        color: #e2e8f0 !important;
+    }
+
+    /* Hover state */
+    .select2-results__option--highlighted {
+        background-color: #3b82f6 !important;
+        color: #ffffff !important;
+    }
+
+    /* Selected option */
+    .select2-results__option--selected {
+        background-color: #dbeafe !important;
+        color: #1e40af !important;
+    }
+
+    .dark .select2-results__option--selected {
+        background-color: #1e3a8a !important;
+        color: #93c5fd !important;
+    }
+
+    /* No results */
+    .select2-results__option--nodata {
+        color: #9ca3af !important;
+        padding: 16px !important;
+        text-align: center !important;
+    }
+
+    /* Clear button */
+    .select2-container--default .select2-selection--single .select2-selection__clear {
+        color: #6b7280 !important;
+        font-size: 0.875rem !important;
+        line-height: 1 !important;
+        margin-right: 8px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__clear:hover {
+        color: #ef4444 !important;
+    }
+
+    /* Loading */
+    .select2-results__message {
+        color: #6b7280 !important;
+        padding: 16px !important;
+        text-align: center !important;
+    }
+
+    /* Disabled state */
+    .select2-container--default .select2-selection--single[aria-disabled="true"] {
+        background-color: #e5e7eb !important;
+        color: #9ca3af !important;
+        cursor: not-allowed !important;
+    }
+
+    .dark .select2-container--default .select2-selection--single[aria-disabled="true"] {
+        background-color: #0f172a !important;
+        color: #64748b !important;
+    }
+
+    /* ========== MULTI-SELECT (MANY-TO-MANY) STYLES ========== */
+
+    /* Selection box para multi-select */
+    .select2-container--default .select2-selection--multiple {
+        min-height: 42px !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.5rem !important;
+        padding: 6px 12px !important;
+        background-color: #f4f5f7 !important;
+        transition: all 0.2s ease;
+    }
+
+    .dark .select2-container--default .select2-selection--multiple {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+
+    /* Focus state para multi-select */
+    .select2-container--default.select2-container--focus .select2-selection--multiple,
+    .select2-container--default.select2-container--open .select2-selection--multiple {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    }
+
+    /* Selected items (tags) en multi-select */
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #3b82f6 !important;
+        border: none !important;
+        color: white !important;
+        border-radius: 0.25rem !important;
+        padding: 4px 10px !important;
+        margin: 2px 4px 2px 0 !important;
+        font-size: 0.875rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        transition: all 0.15s ease !important;
+    }
+
+    .dark .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #2563eb !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice:hover {
+        background-color: #2563eb !important;
+    }
+
+    /* Remove button (×) en tags */
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 0.875rem !important;
+        font-weight: bold !important;
+        margin-right: 6px !important;
+        margin-left: -2px !important;
+        line-height: 1 !important;
+        transition: color 0.15s ease !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+        color: #ffffff !important;
+        background-color: transparent !important;
+    }
+
+    /* Search field dentro del multi-select */
+    .select2-container--default .select2-search--inline .select2-search__field {
+        margin: 0 !important;
+        padding: 4px 0 !important;
+        min-height: 26px !important;
+        background-color: transparent !important;
+        border: none !important;
+        outline: none !important;
+        color: #374151 !important;
+    }
+
+    .dark .select2-container--default .select2-search--inline .select2-search__field {
+        color: #e2e8f0 !important;
+    }
+
+    .select2-container--default .select2-search--inline .select2-search__field::placeholder {
+        color: #9ca3af !important;
+    }
+
+    /* Placeholder cuando no hay selecciones */
+    .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+        color: #9ca3af !important;
+        padding: 4px 0 !important;
+    }
+
+    /* Disabled state para multi-select */
+    .select2-container--default .select2-selection--multiple[aria-disabled="true"] {
+        background-color: #e5e7eb !important;
+        cursor: not-allowed !important;
+    }
+
+    .dark .select2-container--default .select2-selection--multiple[aria-disabled="true"] {
+        background-color: #0f172a !important;
+    }
+
+    /* Clear button para multi-select */
+    .select2-container--default .select2-selection--multiple .select2-selection__clear {
+        color: #6b7280 !important;
+        font-size: 0.875rem !important;
+        margin-right: 6px !important;
+        margin-top: 4px !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__clear:hover {
+        color: #ef4444 !important;
+    }
+</style>
+<div class="h-[60px] bg-white dark:bg-dark dark:border-gray/20 border-b-2 border-lightgray/10 flex items-center justify-between gap-2.5 px-7">
+    <div class="flex items-center gap-2 p-2" id="headerActions2">
+        <div x-data="{ dropdown: false}" class="dropdown">
+            <button class="btn bg-primary border border-primary rounded-md text-white transition-all duration-300 hover:bg-primary/[0.85] hover:border-primary/[0.85] flex items-center justify-center gap-1.5" @click="dropdown = !dropdown" @keydown.escape="dropdown = false">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 11.5C5 9.61438 5 8.67157 5.58579 8.08579C6.17157 7.5 7.11438 7.5 9 7.5H15C16.8856 7.5 17.8284 7.5 18.4142 8.08579C19 8.67157 19 9.61438 19 11.5V12.5C19 14.3856 19 15.3284 18.4142 15.9142C17.8284 16.5 16.8856 16.5 15 16.5H9C7.11438 16.5 6.17157 16.5 5.58579 15.9142C5 15.3284 5 14.3856 5 12.5V11.5Z" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M19 2V2.5C19 3.88071 17.8807 5 16.5 5H7.5C6.11929 5 5 3.88071 5 2.5V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M19 22V21.5C19 20.1193 17.8807 19 16.5 19H7.5C6.11929 19 5 20.1193 5 21.5V22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+
+                    {{session['aplicacion']}}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+                    <path d="M11.9997 13.1714L16.9495 8.22168L18.3637 9.63589L11.9997 15.9999L5.63574 9.63589L7.04996 8.22168L11.9997 13.1714Z" fill="currentColor"></path>
+                </svg>
+            </button>
+            <ul x-show="dropdown" @click.away="dropdown = false" x-transition.duration.300ms 
+                class="right-0 whitespace-nowrap" style="display: none;">
+                {% for aplicacion in session['aplicaciones'] %}
+                    <li>
+                        <a href="javascript:;" data-id="{{ aplicacion }}">
+                            {{ aplicacion }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="flex-auto flex items-center gap-2.5">
+        <div class="flex items-center gap-5 w-full">
+            <form id="consultaForm" action="{{ url_for('ai.ai_html')}}" method="POST" class="block w-full">
+                <div class="relative">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="text" id="pregunta" name="question"
+                        class="form-input ps-10 h-[42px] dark:border-lightgray/20 dark:text-white dark:bg-lightgray/10 border-2 border-gray/10 bg-gray/[8%] rounded-full text-sm text-dark placeholder:text-lightgray/80 focus:ring-0 focus:border-primary/80 focus:outline-0"
+                        placeholder="Consulta con IA..." required>
+
+                    <button type="submit"
+                        class="absolute inset-y-0 left-3 flex items-center text-lightgray hover:text-primary">
+                        <svg focusable="false" viewBox="0 -960 960 960" height="24" width="24" fill="currentColor">
+                            <path
+                                d="M480-80q-6,0-11-4t-7-10q-17-67-51-126T328-328T220-411T94-462q-6-2-10-7t-4-11t4-11t10-7q67-17 126-51t108-83t83-108t51-126q2-6 
+                                7-10t11-4t10.5,4t6.5,10q18,67 52,126t83,108t108,83t126,51q6,2 10,7t4,11t-4,11t-10,7q-67,17-126,51T632-328T549-220T498-94q-2,6-7,10t-11,4Z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="lg:hidden">
+            <button type="button" class="hover:text-primary" @click="$store.app.toggleSidebar()">
+                <svg width="13" height="12" class="rotate-180" viewBox="0 0 13 12" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.2"
+                        d="M5.46133 6.00002L11.1623 12L12.4613 10.633L8.05922 6.00002L12.4613 1.36702L11.1623 0L5.46133 6.00002Z"
+                        fill="currentColor" />
+                    <path d="M0 6.00002L5.70101 12L7 10.633L2.59782 6.00002L7 1.36702L5.70101 0L0 6.00002Z"
+                        fill="currentColor" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div id="headerActions" class="flex items-center gap-5 transition-all duration-200">
+        <div x-data="{
+            open: false,
+            search: '',
+            modules: [{% for table in session['table_names'] %}{ name: '{{ table | title_format }}', value: '{{ table }}' }{% if not loop.last %},{% endif %}{% endfor %}],
+            get filtered() {
+                if (!this.search) return this.modules;
+                const s = this.search.toLowerCase();
+                return this.modules.filter(m => m.name.toLowerCase().includes(s));
+            },
+            select(value) {
+                window.location.href = '/dynamic/' + value + '/view';
+                this.open = false;
+                this.search = '';
+            }
+        }" @click.outside="open = false; search = ''" class="relative hidden sm:block">
+            <div class="relative">
+                <input
+                    type="text"
+                    x-model="search"
+                    @focus="open = true"
+                    @keydown.escape="open = false; search = ''"
+                    @keydown.enter.prevent="if (filtered.length) select(filtered[0].value)"
+                    placeholder="Ir a módulo..."
+                    class="form-input ps-10 h-[42px] w-44 lg:w-56 dark:border-lightgray/20 dark:text-white dark:bg-lightgray/10 border-2 border-gray/10 bg-gray/[8%] rounded-full text-sm text-dark placeholder:text-lightgray/80 focus:ring-0 focus:border-primary/80 focus:outline-0"
+                >
+                <span class="absolute inset-y-0 left-3 flex items-center text-lightgray pointer-events-none">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+            </div>
+            <div
+                x-show="open && filtered.length > 0"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                id="module-dropdown"
+                class="absolute right-0 top-full mt-1 w-56 bg-white dark:bg-dark border border-gray/10 dark:border-gray/20 rounded-lg shadow-lg z-50 py-1"
+                style="display: none; max-height: 260px; overflow-y: scroll;"
+            >
+                <template x-for="mod in filtered" :key="mod.value">
+                    <button
+                        type="button"
+                        @click="select(mod.value)"
+                        class="w-full text-left px-4 py-2 text-sm text-dark dark:text-white hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary transition-colors duration-150"
+                        x-text="mod.name"
+                    ></button>
+                </template>
+            </div>
+        </div>
+        <div x-data="{ fullScreen: false }">
+            <button class="text-lightgray hover:text-primary block"
+                x-bind:class="{ 'hidden': fullScreen, 'block': !fullScreen }" x-on:click="fullScreen = !fullScreen"
+                @click="$store.app.toggleFullScreen()">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g opacity="0.4">
+                        <path d="M19 7V1H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M19 1L11.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </g>
+                    <path d="M1 13V19H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M8.5 11.5L1 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+            <button class="text-lightgray hidden" x-bind:class="{ 'block': fullScreen, 'hidden': !fullScreen }"
+                x-on:click="fullScreen = !fullScreen" @click="$store.app.toggleFullScreen()">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g opacity="0.4">
+                        <path d="M11.5 2.5V8.5H17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M11.5 8.5L19 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </g>
+                    <path d="M8.5 17.5V11.5H2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M1 19L8.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+        <div class="text-lightgray hover:text-primary duration-300">
+            <a href="javascript:;" x-show="$store.app.mode === 'light'" @click="$store.app.toggleMode('dark')"
+                style="display: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd"
+                        d="M22 11.9999C22 17.5228 17.5228 21.9999 12 21.9999C10.8358 21.9999 9.71801 21.801 8.67887 21.4352C8.24138 20.3767 8 19.2165 8 17.9999C8 15.7787 8.80467 13.7454 10.1384 12.1757C11.31 13.8813 13.2744 14.9999 15.5 14.9999C17.8615 14.9999 19.9289 13.7405 21.0672 11.8568C21.3065 11.4607 22 11.5372 22 11.9999Z"
+                        fill="currentColor" />
+                    <path
+                        d="M2 12C2 16.3586 4.78852 20.0659 8.67887 21.4353C8.24138 20.3768 8 19.2166 8 18C8 15.7788 8.80467 13.7455 10.1384 12.1758C9.42027 11.1303 9 9.86422 9 8.5C9 6.13845 10.2594 4.07105 12.1432 2.93276C12.5392 2.69347 12.4627 2 12 2C6.47715 2 2 6.47715 2 12Z"
+                        fill="currentColor" />
+                </svg>
+            </a>
+            <a href="javascript:;" x-show="$store.app.mode === 'dark'" @click="$store.app.toggleMode('light')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M18 12C18 15.3137 15.3137 18 12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12Z"
+                        fill="currentColor" />
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M12 1.25C12.4142 1.25 12.75 1.58579 12.75 2V3C12.75 3.41421 12.4142 3.75 12 3.75C11.5858 3.75 11.25 3.41421 11.25 3V2C11.25 1.58579 11.5858 1.25 12 1.25ZM1.25 12C1.25 11.5858 1.58579 11.25 2 11.25H3C3.41421 11.25 3.75 11.5858 3.75 12C3.75 12.4142 3.41421 12.75 3 12.75H2C1.58579 12.75 1.25 12.4142 1.25 12ZM20.25 12C20.25 11.5858 20.5858 11.25 21 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H21C20.5858 12.75 20.25 12.4142 20.25 12ZM12 20.25C12.4142 20.25 12.75 20.5858 12.75 21V22C12.75 22.4142 12.4142 22.75 12 22.75C11.5858 22.75 11.25 22.4142 11.25 22V21C11.25 20.5858 11.5858 20.25 12 20.25Z"
+                        fill="currentColor" />
+                    <g opacity="0.3">
+                        <path
+                            d="M4.39838 4.39838C4.69127 4.10549 5.16615 4.10549 5.45904 4.39838L5.85188 4.79122C6.14477 5.08411 6.14477 5.55898 5.85188 5.85188C5.55898 6.14477 5.08411 6.14477 4.79122 5.85188L4.39838 5.45904C4.10549 5.16615 4.10549 4.69127 4.39838 4.39838Z"
+                            fill="currentColor" />
+                        <path
+                            d="M19.6009 4.39864C19.8938 4.69153 19.8938 5.16641 19.6009 5.4593L19.2081 5.85214C18.9152 6.14503 18.4403 6.14503 18.1474 5.85214C17.8545 5.55924 17.8545 5.08437 18.1474 4.79148L18.5402 4.39864C18.8331 4.10575 19.308 4.10575 19.6009 4.39864Z"
+                            fill="currentColor" />
+                        <path
+                            d="M18.1474 18.1474C18.4403 17.8545 18.9152 17.8545 19.2081 18.1474L19.6009 18.5402C19.8938 18.8331 19.8938 19.308 19.6009 19.6009C19.308 19.8938 18.8331 19.8938 18.5402 19.6009L18.1474 19.2081C17.8545 18.9152 17.8545 18.4403 18.1474 18.1474Z"
+                            fill="currentColor" />
+                        <path
+                            d="M5.85188 18.1477C6.14477 18.4406 6.14477 18.9154 5.85188 19.2083L5.45904 19.6012C5.16615 19.8941 4.69127 19.8941 4.39838 19.6012C4.10549 19.3083 4.10549 18.8334 4.39838 18.5405L4.79122 18.1477C5.08411 17.8548 5.55898 17.8548 5.85188 18.1477Z"
+                            fill="currentColor" />
+                    </g>
+                </svg>
+            </a>
+        </div>
+        <div class="profile z-30" x-data="dropdown" @click.outside="open = false">
+            {% if session['id_usuario']!='' %}
+            <button type="button" class="flex items-center gap-2.5" @click="toggle()">
+                <img class="h-[38px] w-[38px] rounded-full" src="https://api.dicebear.com/9.x/initials/svg?seed={{ session['nombre'] }}&scale=80&backgroundColor=4697C7,4bb4d1&backgroundType=gradientLinear&backgroundRotation=0" alt="usuario Avatar">
+                <div class="text-start">
+                    <div class="flex items-center gap-1">
+                        <span class="hidden xl:block text-sm font-semibold">{{ session['nombre'] }}</span>
+                        <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M1.29241 5.20759C0.901881 4.81707 0.90188 4.18391 1.29241 3.79338C1.68293 3.40286 2.31609 3.40286 2.70662 3.79338L5.99951 7.08627L9.2924 3.79338C9.68293 3.40286 10.3161 3.40286 10.7066 3.79338C11.0971 4.18391 11.0971 4.81707 10.7066 5.20759L6.70662 9.2076C6.31609 9.59812 5.68293 9.59812 5.2924 9.2076L1.29241 5.20759Z"
+                                fill="currentColor" />
+                        </svg>
+                    </div>
+                    <span class="hidden xl:block text-xs text-lightgray">
+                        {{ session.get('nombre_rol', 'Sin rol asignado') }}
+                    </span>
+                </div>
+            </button>
+            <ul x-show="open" x-transition="" x-transition.duration.300ms="" style="display: none;">
+                <li>
+                    <button id="addPasskeyBtn" class="flex items-center gap-2 text-lightgray hover:text-primary duration-300 text-sm font-semibold">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.3142 3.68576L20.8446 3.15543L20.3142 3.68576ZM20.3142 11.8253L20.8446 12.3557L20.3142 11.8253ZM10.4547 10.057L9.92432 9.52663L9.92432 9.52663L10.4547 10.057ZM7.36124 13.1504L7.89157 13.6807H7.89157L7.36124 13.1504ZM10.8496 16.6388L10.3193 16.1084L10.3193 16.1084L10.8496 16.6388ZM13.9433 13.5451L13.4129 13.0148L13.9433 13.5451ZM7.00755 14.1587L6.26214 14.2415L6.26214 14.2415L7.00755 14.1587ZM7.20094 15.8992L6.45553 15.982L6.45553 15.982L7.20094 15.8992ZM8.10084 16.7991L8.01802 17.5445L8.01802 17.5445L8.10084 16.7991ZM9.84133 16.9924L9.92416 16.247H9.92416L9.84133 16.9924ZM7.43673 16.3898L7.96707 15.8594L7.96706 15.8594L7.43673 16.3898ZM7.61025 16.5633L7.07991 17.0936L7.07992 17.0936L7.61025 16.5633ZM10.6703 9.1926L9.94383 9.37914L9.94383 9.37914L10.6703 9.1926ZM14.8074 13.3297L14.6209 14.0562H14.6209L14.8074 13.3297ZM10.9532 13.6303C10.6587 13.339 10.1838 13.3416 9.89252 13.6361C9.60124 13.9306 9.60385 14.4055 9.89835 14.6967L10.9532 13.6303ZM15.5185 8.48151C15.1605 8.12353 15.1605 7.54313 15.5185 7.18515L14.4578 6.12449C13.5141 7.06826 13.5141 8.59841 14.4578 9.54217L15.5185 8.48151ZM16.8148 8.48151C16.4569 8.83949 15.8765 8.83949 15.5185 8.48151L14.4578 9.54217C15.4016 10.4859 16.9317 10.4859 17.8755 9.54217L16.8148 8.48151ZM16.8148 7.18515C17.1728 7.54313 17.1728 8.12353 16.8148 8.48151L17.8755 9.54217C18.8193 8.59841 18.8193 7.06826 17.8755 6.12449L16.8148 7.18515ZM17.8755 6.12449C16.9317 5.18072 15.4016 5.18072 14.4578 6.12449L15.5185 7.18515C15.8765 6.82717 16.4569 6.82717 16.8148 7.18515L17.8755 6.12449ZM19.7839 4.21609C21.7387 6.17088 21.7387 9.34021 19.7839 11.295L20.8446 12.3557C23.3851 9.81509 23.3851 5.696 20.8446 3.15543L19.7839 4.21609ZM20.8446 3.15543C18.304 0.614857 14.1849 0.614857 11.6443 3.15543L12.705 4.21609C14.6598 2.2613 17.8291 2.2613 19.7839 4.21609L20.8446 3.15543ZM9.92432 9.52663L6.83091 12.62L7.89157 13.6807L10.985 10.5873L9.92432 9.52663ZM11.38 17.1691L12.4136 16.1354L11.353 15.0748L10.3193 16.1084L11.38 17.1691ZM12.4136 16.1354L14.4736 14.0754L13.4129 13.0148L11.353 15.0748L12.4136 16.1354ZM6.26214 14.2415L6.45553 15.982L7.94635 15.8163L7.75296 14.0758L6.26214 14.2415ZM8.01802 17.5445L9.75851 17.7379L9.92416 16.247L8.18367 16.0536L8.01802 17.5445ZM6.9064 16.9201L7.07991 17.0936L8.14058 16.0329L7.96707 15.8594L6.9064 16.9201ZM8.18367 16.0536C8.16736 16.0518 8.15217 16.0445 8.14058 16.0329L7.07992 17.0936C7.33236 17.346 7.6632 17.505 8.01802 17.5445L8.18367 16.0536ZM6.45553 15.982C6.49495 16.3368 6.65396 16.6676 6.9064 16.9201L7.96706 15.8594C7.95547 15.8478 7.94816 15.8326 7.94635 15.8163L6.45553 15.982ZM10.3193 16.1084C10.2155 16.2122 10.0701 16.2633 9.92416 16.247L9.75851 17.7379C10.3573 17.8044 10.9539 17.5951 11.38 17.1691L10.3193 16.1084ZM6.83091 12.62C6.40488 13.0461 6.1956 13.6427 6.26214 14.2415L7.75296 14.0758C7.73675 13.9299 7.78775 13.7845 7.89157 13.6807L6.83091 12.62ZM11.3967 9.00605C10.9704 7.34603 11.4077 5.51341 12.705 4.21609L11.6443 3.15543C9.95676 4.84301 9.3911 7.22673 9.94383 9.37914L11.3967 9.00605ZM19.7839 11.295C18.4866 12.5923 16.654 13.0296 14.9939 12.6033L14.6209 14.0562C16.7733 14.6089 19.157 14.0432 20.8446 12.3557L19.7839 11.295ZM14.4736 14.0754C14.4807 14.0684 14.4935 14.0591 14.5182 14.0532C14.5444 14.047 14.5805 14.0458 14.6209 14.0562L14.9939 12.6033C14.4675 12.4681 13.8509 12.5768 13.4129 13.0148L14.4736 14.0754ZM10.985 10.5873C11.4227 10.1495 11.532 9.53285 11.3967 9.00605L9.94383 9.37914C9.95415 9.41931 9.95302 9.45541 9.94673 9.48175C9.94081 9.50657 9.93144 9.51951 9.92432 9.52663L10.985 10.5873ZM12.4107 15.0719L10.9532 13.6303L9.89835 14.6967L11.3559 16.1383L12.4107 15.0719Z" fill="currentColor"/>
+                            <path d="M22 14.993C21.9361 17.787 21.6692 19.419 20.5542 20.5341C19.0882 22 16.7288 22 12.0101 22C7.29127 22 4.93188 22 3.46594 20.5341C2 19.0681 2 16.7087 2 11.9899C2 7.27117 2 4.91177 3.46594 3.44584C4.58099 2.33078 6.21298 2.06388 9.00704 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        Pass Key
+                    </button>
+                </li>                               
+                <li>
+                    <a href="/authentication/logout" class="!text-danger flex items-center gap-2">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd"
+                                d="M10.3564 1.6665C9.42824 1.6665 8.58294 2.16709 6.89234 3.16827L6.32055 3.50688C4.62995 4.50806 3.78465 5.00865 3.32055 5.83317C2.85645 6.6577 2.85645 7.65887 2.85645 9.66122V10.3385C2.85645 12.3408 2.85645 13.342 3.32055 14.1665C3.78465 14.991 4.62995 15.4916 6.32055 16.4928L6.89234 16.8314C8.58294 17.8326 9.42824 18.3332 10.3564 18.3332C11.2846 18.3332 12.1299 17.8326 13.8205 16.8314L14.3923 16.4928C16.0829 15.4916 16.9282 14.991 17.3923 14.1665C17.8564 13.342 17.8564 12.3408 17.8564 10.3385V9.66122C17.8564 7.65887 17.8564 6.6577 17.3923 5.83317C16.9282 5.00865 16.0829 4.50806 14.3923 3.50688L13.8205 3.16827C12.1299 2.16709 11.2846 1.6665 10.3564 1.6665Z"
+                                fill="currentColor" />
+                            <path
+                                d="M10.3564 6.875C8.63056 6.875 7.23145 8.27411 7.23145 10C7.23145 11.7259 8.63056 13.125 10.3564 13.125C12.0823 13.125 13.4814 11.7259 13.4814 10C13.4814 8.27411 12.0823 6.875 10.3564 6.875Z"
+                                fill="currentColor" />
+                        </svg>
+                        Cerrar sesión
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/system/header.js') }}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Select all <a> links inside the dropdown
+    document.querySelectorAll(".dropdown ul li a").forEach(link => {
+        link.addEventListener("click", async function () {
+            const app = this.getAttribute("data-id");
+            try {
+                const response = await fetch("/set_app", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({ app })
+                });
+
+                const result = await response.json();
+                if (result.status === "success") {
+                    window.location.assign("/");
+                } else {
+                    alert("Error: " + result.message);
+                }
+            } catch (err) {
+                console.error("Error setting app:", err);
+            }
+        });
+    });
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const aiInput = document.getElementById("pregunta");
+    const body = document.body;
+
+    // When AI input is focused
+    aiInput.addEventListener("focus", () => {
+        if (window.innerWidth <= 640) {
+            body.classList.add("ai-active");
+        }
+    });
+
+    // When AI input loses focus
+    aiInput.addEventListener("blur", () => {
+        body.classList.remove("ai-active");
+    });
+});
+</script>

@@ -1,0 +1,115 @@
+{% for filter, items in filter_column.items() %}
+<div x-data="modernMultiSelect('filter_{{ loop.index }}', '{{ filter }}')" x-modelable="selected" class="w-full max-w-md mx-auto text-sm" >
+    <!-- Dropdown -->
+    <div class="relative">
+        <button @click="open = !open" type="button"
+            class="form-select w-full px-4 py-2 flex justify-between items-center">
+            <span x-show="selectedOptions.length === 0" class="text-lightgray">{{filter|title_format}}...</span>
+            <span x-show="selectedOptions.length > 0" class="text-lightgray" x-text="`${selectedOptions.length} seleccionadas`"></span>
+            <svg class="ml-2 w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+        </button>
+        <!-- Dropdown List -->
+        <div x-show="open"
+            @click.away="open = false"
+            x-transition.origin.top
+            class="filter-multiselect fixed left-1/2 -translate-x-1/2 top-20 w-80 z-50 bg-white shadow-lg rounded-lg">
+
+            <!-- Search (fixed) -->
+            <div class="p-2 border-b">
+                <input
+                    type="text"
+                    x-model="search"
+                    placeholder="Buscar..."
+                    class="w-full form-input rounded px-3 py-2 focus:ring-2 focus:ring-emerald-300 outline-none"
+                    @keydown.escape.window="open = false"
+                    autofocus
+                >
+            </div>
+
+            <!-- Scrollable list -->
+            <div class="max-h-96 overflow-y-auto p-2 table-scroll-vertical">
+                <template x-if="filteredOptions.length === 0">
+                    <div class="text-gray-400 px-3 py-2 text-center select-none">
+                        Sin resultados
+                    </div>
+                </template>
+
+                <template x-for="option in filteredOptions" :key="option.value">
+                    <div
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-emerald-50"
+                        @click.stop
+                    >
+                        <!-- ✅ ONLY CLICKABLE ELEMENT -->
+                        <input
+                            type="checkbox"
+                            class="form-checkbox cursor-pointer"
+                            :checked="isSelected(option)"
+                            @click.stop="toggleOption(option)"
+                        >
+
+                        <!-- ❌ TEXT IS NOT CLICKABLE -->
+                        <span
+                            class="select-none cursor-default"
+                            @click.stop
+                            x-text="option.text">
+                        </span>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/json" id="filter_{{ loop.index }}">
+    {{ items | tojson | safe }}
+</script>
+{% endfor %}
+<script>
+function modernMultiSelect(scriptId, filterName) {
+    return {
+        filterName: filterName,
+        open: false,
+        search: "",
+        options: [],
+        selected: [],
+
+        init() {
+            const el = document.getElementById(scriptId);
+            if (el) this.options = JSON.parse(el.textContent);
+        },
+
+        get selectedOptions() {
+            return this.options.filter(opt => this.selected.includes(opt.value));
+        },
+
+        get filteredOptions() {
+            if (!this.search.trim()) return this.options;
+            return this.options.filter(opt =>
+                opt.text.toLowerCase().includes(this.search.trim().toLowerCase())
+            );
+        },
+
+        isSelected(option) {
+            return this.selected.includes(option.value);
+        },
+
+        updateTableFilters() {
+            this.$dispatch("update-filter", {
+                key: this.filterName,
+                value: this.selected
+            });
+        },
+
+        toggleOption(option) {
+            if (this.selected.includes(option.value)) {
+                this.selected = this.selected.filter(val => val !== option.value);
+            } else {
+                this.selected.push(option.value);
+            }
+            this.updateTableFilters();
+        },
+    };
+}
+
+</script>

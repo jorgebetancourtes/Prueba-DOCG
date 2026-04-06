@@ -1,0 +1,8 @@
+{% if can_access('/dynamic/reportes/view') %}
+    <div class="flex justify-end">
+        <a href="{{ url_for('dynamic.table_view',table_name='reportes') }}" 
+        class="btn border text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+            Reportes
+        </a>
+    </div>
+{% endif %}

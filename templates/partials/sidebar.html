@@ -1,0 +1,32 @@
+<nav class="sidebar fixed z-50 flex-none w-[226px] border-r-2 border-lightgray/[8%] dark:border-gray/20 transition-all duration-300">
+    <div class="bg-white dark:bg-dark h-full">
+        <div class="p-3.5 mt-3">
+            <a href="/" class="main-logo w-full">
+                <img src="/static/images/logo-light.png" class="mx-auto dark-logo h-12 logo dark:hidden"
+                    alt="logo" />
+                <img src="/static/images/logo-dark.png" class="mx-auto light-logo h-12 logo hidden dark:block"
+                    alt="logo" />
+                <img src="/static/images/logo-light.png" class="logo-icon h-8 mx-auto hidden" alt="">
+            </a>
+        </div>
+        <div class="flex items-center gap-2.5 py-2.5 pe-2.5">
+            <div class="h-[2px] bg-lightgray/10 dark:bg-gray/50 block flex-1"></div>
+            <button type="button" class="shrink-0 btn-toggle hover:text-primary duration-300"
+                @click="$store.app.toggleSidebar()">
+                <svg class="w-3.5" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.2"
+                        d="M5.46133 6.00002L11.1623 12L12.4613 10.633L8.05922 6.00002L12.4613 1.36702L11.1623 0L5.46133 6.00002Z"
+                        fill="currentColor" />
+                    <path d="M0 6.00002L5.70101 12L7 10.633L2.59782 6.00002L7 1.36702L5.70101 0L0 6.00002Z"
+                        fill="currentColor" />
+                </svg>
+            </button>
+        </div>
+        {% if session['aplicacion']=='Portal' %}
+            {% include "partials/sidebar/portal.html" %}
+        {% endif%}
+        {% if session['aplicacion']=='Settings' %}
+            {% include "partials/sidebar/settings.html" %}
+        {% endif%}
+    </div>
+</nav>

@@ -1,0 +1,64 @@
+<thead class="text-left bg-white dark:bg-dark sticky top-0 z-5">
+    <tr>
+        {% if checkbox %}
+        <th>
+            <input type="checkbox"
+                   class="form-checkbox"
+                   @change="toggleAllCheckboxes" />
+        </th>
+        {% endif %}
+
+        <!-- Dynamic columns -->
+        <template x-for="column in columns" :key="column">
+            <th :data-column="column">
+                <div class="flex items-center justify-between gap-2">
+                    <p x-text="titleFormat(column)"></p>
+
+                    <div class="flex flex-col">
+                        <!-- Asc -->
+                        <svg
+                            @click="sort(column, sorted.rule === 'asc' ? 'desc' : 'asc')"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="4"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            class="h-3 w-3 cursor-pointer text-muted"
+                            :class="{
+                                '!text-black':
+                                    sorted.field === column &&
+                                    sorted.rule === 'asc'
+                            }">
+                            <path d="M5 15l7-7 7 7"></path>
+                        </svg>
+
+                        <!-- Desc -->
+                        <svg
+                            @click="sort(column, sorted.rule === 'desc' ? 'asc' : 'desc')"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="4"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            class="h-3 w-3 cursor-pointer text-muted"
+                            :class="{
+                                '!text-black':
+                                    sorted.field === column &&
+                                    sorted.rule === 'desc'
+                            }">
+                            <path d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </th>
+        </template>
+
+        {% if number_buttons %}
+            {% for _ in range(number_buttons) %}
+                <th></th>
+            {% endfor %}
+        {% endif %}
+    </tr>
+</thead>

@@ -1,0 +1,77 @@
+<!-- templates/partials/table_modal.html -->
+<style>
+    tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+</style>
+<div id="modal" class="hidden fixed inset-0 bg-dark/90 dark:bg-white/5 backdrop-blur-sm z-[99999] hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 rounded-lg overflow-hidden my-8 w-full max-w-xl">
+            <div class="flex bg-white dark:bg-dark items-center border-b border-lightgray/10 dark:border-gray/20 justify-between px-5 py-3">
+                <h5 class="font-semibold text-lg">
+                    <span  id="modal_title"></span>
+                    <span>|</span>
+                    <span id="estatus"></span>
+                </h5>
+                <button type="button" onclick="closeActions()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5">
+                        <path
+                            d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z"
+                            fill="currentColor"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="px-3 space-y-4">         
+                <div class="text-big font-normal">
+                    <div class="flex justify-end items-center ml-auto p-3" id="buttons_modal_exits">
+                        {% include 'partials/table/modals/' ~ table_name ~ '.html' ignore missing %}
+                    </div>                       
+                    <table class="overflow-auto w-full" id="modal_content"></table>
+                </div>
+                <div class="flex justify-start items-center gap-4 p-3">
+                    <!-- Botón para descargar -->
+                    <button data-action="descargar" type="button"
+                        class="bg-gray/10 w-10 h-10 flex items-center justify-center hover:bg-dark hover:text-white dark:hover:bg-white dark:hover:text-dark border border-transparent rounded-md transition-all duration-300">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12.5535 16.5061C12.4114 16.6615 12.2106 16.75 12 16.75C11.7894 16.75 11.5886 16.6615 11.4465 16.5061L7.44648 12.1311C7.16698 11.8254 7.18822 11.351 7.49392 11.0715C7.79963 10.792 8.27402 10.8132 8.55352 11.1189L11.25 14.0682V3C11.25 2.58579 11.5858 2.25 12 2.25C12.4142 2.25 12.75 2.58579 12.75 3V14.0682L15.4465 11.1189C15.726 10.8132 16.2004 10.792 16.5061 11.0715C16.8118 11.351 16.833 11.8254 16.5535 12.1311L12.5535 16.5061Z"
+                                fill="currentColor" />
+                            <path
+                                d="M3.75 15C3.75 14.5858 3.41422 14.25 3 14.25C2.58579 14.25 2.25 14.5858 2.25 15V15.0549C2.24998 16.4225 2.24996 17.5248 2.36652 18.3918C2.48754 19.2919 2.74643 20.0497 3.34835 20.6516C3.95027 21.2536 4.70814 21.5125 5.60825 21.6335C6.47522 21.75 7.57754 21.75 8.94513 21.75H15.0549C16.4225 21.75 17.5248 21.75 18.3918 21.6335C19.2919 21.5125 20.0497 21.2536 20.6517 20.6516C21.2536 20.0497 21.5125 19.2919 21.6335 18.3918C21.75 17.5248 21.75 16.4225 21.75 15.0549V15C21.75 14.5858 21.4142 14.25 21 14.25C20.5858 14.25 20.25 14.5858 20.25 15C20.25 16.4354 20.2484 17.4365 20.1469 18.1919C20.0482 18.9257 19.8678 19.3142 19.591 19.591C19.3142 19.8678 18.9257 20.0482 18.1919 20.1469C17.4365 20.2484 16.4354 20.25 15 20.25H9C7.56459 20.25 6.56347 20.2484 5.80812 20.1469C5.07435 20.0482 4.68577 19.8678 4.40901 19.591C4.13225 19.3142 3.9518 18.9257 3.85315 18.1919C3.75159 17.4365 3.75 16.4354 3.75 15Z"
+                                fill="currentColor" />
+                        </svg>
+                    </button>
+                    <!-- Botón para actualizar -->
+                    {% if table_name not in vars.no_edit_button and can_access('/dynamic/' ~ table_name ~ '/edit') %}
+                        <button data-action="actualizar" type="button"
+                            class="bg-gray/10 w-10 h-10 flex items-center justify-center hover:bg-dark hover:text-white dark:hover:bg-white dark:hover:text-dark border border-transparent rounded-md transition-all duration-300">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M9.57342 2.71915L10.1913 2.10123C11.2151 1.07742 12.8751 1.07742 13.8989 2.10123C14.9227 3.12503 14.9227 4.78494 13.8989 5.80874L13.2809 6.42666M9.57342 2.71915C9.57342 2.71915 9.65066 4.03223 10.8093 5.19082C11.9679 6.34942 13.2809 6.42666 13.2809 6.42666M9.57342 2.71915L3.89259 8.39997C3.50782 8.78475 3.31543 8.97714 3.14997 9.18926C2.9548 9.4395 2.78746 9.71025 2.65094 9.99672C2.5352 10.2396 2.44916 10.4977 2.27708 11.0139L1.54791 13.2014M13.2809 6.42666L7.60011 12.1075C7.21533 12.4923 7.02295 12.6847 6.81082 12.8501C6.56059 13.0453 6.28984 13.2126 6.00336 13.3491C5.7605 13.4649 5.50239 13.5509 4.98616 13.723L2.79865 14.4522M2.79865 14.4522L2.26393 14.6304C2.00989 14.7151 1.72981 14.649 1.54046 14.4596C1.35111 14.2703 1.28499 13.9902 1.36967 13.7361L1.54791 13.2014M2.79865 14.4522L1.54791 13.2014"
+                                    stroke="currentColor" stroke-width="1.6" />
+                            </svg>
+                        </button>
+                    {% endif %}
+                    {% if session['nombre_rol']=='Sistema' %}
+                        <button data-action="delete" type="button"
+                            class="border w-10 h-10 flex items-center justify-center text-danger border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-danger bg-danger/10">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M2.29166 5.13898C2.29166 4.75545 2.57947 4.44454 2.93451 4.44454L5.15471 4.44417C5.59584 4.43209 5.985 4.12909 6.13511 3.68084C6.13905 3.66906 6.14359 3.65452 6.15987 3.60177L6.25553 3.29169C6.31407 3.10157 6.36508 2.93594 6.43644 2.78789C6.7184 2.20299 7.24005 1.79683 7.84288 1.69285C7.99547 1.66653 8.15706 1.66664 8.34254 1.66677H11.2409C11.4264 1.66664 11.588 1.66653 11.7406 1.69285C12.3434 1.79683 12.8651 2.20299 13.147 2.78789C13.2184 2.93594 13.2694 3.10157 13.3279 3.29169L13.4236 3.60177C13.4399 3.65452 13.4444 3.66906 13.4484 3.68084C13.5985 4.12909 14.0648 4.43246 14.5059 4.44454H16.6488C17.0038 4.44454 17.2917 4.75545 17.2917 5.13898C17.2917 5.5225 17.0038 5.83341 16.6488 5.83341H2.93451C2.57947 5.83341 2.29166 5.5225 2.29166 5.13898Z"
+                                    fill="currentColor" />
+                                <path opacity="0.3"
+                                    d="M9.67232 18.3333H10.3281C12.5843 18.3333 13.7125 18.3333 14.4459 17.6139C15.1794 16.8946 15.2545 15.7146 15.4046 13.3547L15.6208 9.95428C15.7023 8.67382 15.743 8.03358 15.375 7.62788C15.007 7.22217 14.3856 7.22217 13.1429 7.22217H6.85755C5.61477 7.22217 4.99337 7.22217 4.62541 7.62788C4.25744 8.03358 4.29815 8.67382 4.37959 9.95428L4.59584 13.3547C4.74593 15.7146 4.82097 16.8946 5.55446 17.6139C6.28795 18.3333 7.41607 18.3333 9.67232 18.3333Z"
+                                    fill="currentColor" />
+                            </svg>
+                        </button>
+                    {% endif %}                  
+                </div>                  
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="action_buttons" method="POST" style="display: none;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+</form>
+<script src="{{ url_for('static', filename='js/system/table/dynamic_modal.js') }}"></script>

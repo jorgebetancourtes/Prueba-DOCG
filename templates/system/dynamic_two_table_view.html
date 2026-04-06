@@ -1,0 +1,392 @@
+{% extends 'partials/system/layout1.html' %}
+
+{% block content %}
+{% include "partials/system/alerts.html" %}
+
+<!-- Breadcrumb -->
+{% include 'partials/table/system/breadcrumbs.html' %}
+{% import 'variables.html' as vars %}
+<div class="h-[calc(100vh-366px)] sm:h-[calc(100vh-204px)]">
+    <div class="flex flex-wrap items-center gap-5 p-5 border-2 border-gray/[0.14] rounded-lg flex items-center justify-between" style="background: linear-gradient(90.17deg, rgba(48, 154, 252, 0.1) -3.08%, rgba(87, 84, 255, 0.1) 31.4%, rgba(255, 81, 164, 0.1) 65.89%, rgba(255, 124, 81, 0.1) 100.37%);">
+        <div id="details-container" class="grid grid-cols-3 gap-5 pl-2">
+            {% for detail, value in details.items() %}
+
+                {% if detail in vars.date_time_columns %}
+                    {% set value = value | local_time %}
+                {% elif detail in vars.money_format_columns %}
+                    {% set value = value | money_format %}
+                {% endif %}
+
+                <div class="flex justify-between items-center text-sm">
+                    <p class="flex text-gray text-xs mr-3 ">
+                        {{ detail | title_format }}
+                    </p>
+                    <p class="text-sm">
+                        {{ value if value is not none else '' }}
+                    </p>
+                </div>
+
+            {% endfor %}
+        </div>
+        <div class="flex gap-2">
+            <form method="GET" action="{{ url_for('dynamic.double_table_view_confirm', table_name=table_name,id=main_record.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit"
+                    class="py-2 px-3 bg-success border border-success rounded-md text-white transition-all duration-300 hover:bg-success/[0.85] hover:border-success/[0.85]">
+                    Confirmar
+                </button>
+            </form>
+        </div>
+    </div>
+    <div x-data class="grid gap-5 pt-5" :class="$store.view.mode === 'split' ? 'grid-cols-2' : 'grid-cols-1'">
+        <!-- Primer Tabla -->
+        <div  x-show="$store.view.mode === 'split' || $store.view.mode === 'first'">
+            <div id="table-data" data-table="/dynamic/{{ table_name }}/double_table/data/first/{{ main_record.id }}" data-columns='{{ columns_first_table|tojson }}'></div>
+            <div class="flex flex-col ">
+                <div class="grid grid-cols-1 gap-5">
+                    <div class="sticky top-0 z-10 bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg" x-data="tabla" x-init="initData(); $watch('searchInput', value => { search(value) })">
+                        <div class="flex justify-between items-center gap-3">
+                            <div>
+                                <h2 class="text-base font-semibold">{{ title_first_table }}</h2>
+                            </div>
+                            <div class="flex items-center gap-5">
+                                <input id="search" x-model="searchInput" type="text" class="form-input" placeholder="Buscar...">
+                                <button
+                                    x-show="$store.view.mode !== 'first'"
+                                    @click="$store.view.mode = 'first'"
+                                    type="button"
+                                    title="Mostrar esta tabla a pantalla completa">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.4">
+                                            <path d="M19 7V1H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M19 1L11.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        </g>
+                                        <path d="M1 13V19H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M8.5 11.5L1 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                                <button
+                                    x-show="$store.view.mode === 'first'"
+                                    @click="$store.view.mode = 'split'"
+                                    type="button"
+                                    title="Volver a vista de dos tablas">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.4">
+                                            <path d="M11.5 2.5V8.5H17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"stroke-linejoin="round" />
+                                            <path d="M11.5 8.5L19 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"stroke-linejoin="round" />
+                                        </g>
+                                        <path d="M8.5 17.5V11.5H2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"stroke-linejoin="round" />
+                                        <path d="M1 19L8.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-auto table-scroll-horizontal table-scroll-vertical" style="max-height: calc(100vh - 410px);">
+                            <table class="min-w-[640px] w-full table-hover table-striped">
+                                <thead class="bg-white dark:bg-dark sticky top-0 z-10">
+                                    <tr>
+                                        <th></th>
+                                        {% for column in columns_first_table %}
+                                        <th data-column="{{ column }}">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <p class="font-semibold">{{ column|title_format }}</p>
+                                                <div class="flex flex-col">
+                                                    <!-- Icono para ordenar ascendente -->
+                                                    <svg @click="sort('{{ column }}', sorted.rule === 'asc' ? 'desc' : 'asc')"
+                                                        fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                                                        viewBox="0 0 24 24" stroke="currentColor"
+                                                        class="h-3 w-3 cursor-pointer text-muted"
+                                                        x-bind:class="{'!text-black': sorted.field === '{{ column }}' && sorted.rule === 'asc'}">
+                                                        <path d="M5 15l7-7 7 7"></path>
+                                                    </svg>
+                                                    <!-- Icono para ordenar descendente -->
+                                                    <svg @click="sort('{{ column }}', sorted.rule === 'desc' ? 'asc' : 'desc')"
+                                                        fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                                                        viewBox="0 0 24 24" stroke="currentColor"
+                                                        class="h-3 w-3 cursor-pointer text-muted"
+                                                        x-bind:class="{'!text-black': sorted.field === '{{ column }}' && sorted.rule === 'desc'}">
+                                                        <path d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="record in items" :key="record.id">
+                                        <tr class="cursor-pointer hover:bg-gray-100">
+                                            <!-- Botón de agregar -->
+                                            <td>
+                                                <button @click="addRecord('{{ table_name }}','{{ model_first_table }}', '{{ model_second_table }}', '{{ main_record.id }}', record.id, '{{ csrf_token() }}')" class="border w-10 h-10 flex items-center justify-center text-success border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-success bg-success/10">
+                                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"  xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M13 7.00005L7 7.00005M7 7.00005L1 7.00005M7 7.00005L7 1M7 7.00005L7 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                                        </svg>
+                                                </button>
+                                            </td>   
+                                            <template x-for="(col, i) in {{ columns_first_table }}" :key="i">
+                                                <td>
+                                                    <span 
+                                                        x-text="
+                                                            record[col]
+                                                                ? (
+                                                                    money_format_columns.includes(col)
+                                                                        ? money_format(record[col])
+                                                                    : percentage_format_columns.includes(col)
+                                                                        ? record[col] + '%'
+                                                                    : typeof record[col] === 'number'
+                                                                        ? commafy(record[col])
+                                                                    : record[col]
+                                                                )
+                                                                : '-'
+                                                        ">
+                                                    </span>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!-- Segunda Tabla -->
+        <div x-show="$store.view.mode === 'split' || $store.view.mode === 'second'">
+            <div id="table-data2" data-table="/dynamic/{{ table_name }}/double_table/data/second/{{ main_record.id }}" data-columns='{{ columns_second_table|tojson }}'></div>
+            <div class="flex flex-col">
+                <div class="grid grid-cols-1 gap-5">
+                    <div class="bg-white dark:bg-dark dark:border-gray/20 border-2 border-lightgray/10 p-5 rounded-lg" x-data="tabla2" x-init="$watch('items', () => {$nextTick(() => rebindSelect2());}); initData();$watch('searchInput', value => { search(value) })">
+                        <div class="sticky top-0 z-10 flex justify-between items-center gap-3">
+                            <div>
+                                <h2 class="text-base font-semibold">{{ title_second_table }}</h2>
+                            </div>
+                            <div class="flex items-center gap-5">
+                                <input id="search" x-model="searchInput" type="text" class="form-input" placeholder="Buscar...">
+                                <button
+                                    x-show="$store.view.mode !== 'second'"
+                                    @click="$store.view.mode = 'second'"
+                                    type="button"
+                                    title="Mostrar esta tabla a pantalla completa">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.4">
+                                            <path d="M19 7V1H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M19 1L11.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        </g>
+                                        <path d="M1 13V19H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M8.5 11.5L1 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                                <button
+                                    x-show="$store.view.mode === 'second'"
+                                    @click="$store.view.mode = 'split'"
+                                    type="button"
+                                    title="Volver a vista de dos tablas">
+                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g opacity="0.4">
+                                            <path d="M11.5 2.5V8.5H17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"stroke-linejoin="round" />
+                                            <path d="M11.5 8.5L19 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"stroke-linejoin="round" />
+                                        </g>
+                                        <path d="M8.5 17.5V11.5H2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"stroke-linejoin="round" />
+                                        <path d="M1 19L8.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-auto table-scroll-horizontal table-scroll-vertical"  style="max-height: calc(100vh - 410px);">
+                            <table class="min-w-[640px] w-full table-hover table-striped">
+                                <thead class="bg-white dark:bg-dark sticky top-0 z-10">
+                                    <tr>
+                                        <th></th>
+                                        {% for column in columns_second_table %}
+                                        <th data-column="{{ column }}">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <p class="font-semibold">{{ column|title_format }} {% if column in required_fields %} * {% endif %} </p>
+                                                <div class="flex flex-col">
+                                                    <!-- Icono para ordenar ascendente -->
+                                                    <svg @click="sort('{{ column }}', sorted.rule === 'asc' ? 'desc' : 'asc')"
+                                                        fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                                                        viewBox="0 0 24 24" stroke="currentColor"
+                                                        class="h-3 w-3 cursor-pointer text-muted"
+                                                        x-bind:class="{'!text-black': sorted.field === '{{ column }}' && sorted.rule === 'asc'}">
+                                                        <path d="M5 15l7-7 7 7"></path>
+                                                    </svg>
+                                                    <!-- Icono para ordenar descendente -->
+                                                    <svg @click="sort('{{ column }}', sorted.rule === 'desc' ? 'asc' : 'desc')"
+                                                        fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+                                                        viewBox="0 0 24 24" stroke="currentColor"
+                                                        class="h-3 w-3 cursor-pointer text-muted"
+                                                        x-bind:class="{'!text-black': sorted.field === '{{ column }}' && sorted.rule === 'desc'}">
+                                                        <path d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="record in items" :key="record.id">
+                                        <tr class="cursor-pointer hover:bg-gray-100">
+                                            <!-- Botón de borrar -->
+                                            <td>
+                                                <button @click="deleteRecord('{{ table_name }}', '{{ model_second_table }}', '{{ main_record.id }}', record.id, '{{ csrf_token() }}')" class="border w-10 h-10 flex items-center justify-center text-danger border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-danger bg-danger/10">
+                                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M2.29166 5.13898C2.29166 4.75545 2.57947 4.44454 2.93451 4.44454L5.15471 4.44417C5.59584 4.43209 5.985 4.12909 6.13511 3.68084C6.13905 3.66906 6.14359 3.65452 6.15987 3.60177L6.25553 3.29169C6.31407 3.10157 6.36508 2.93594 6.43644 2.78789C6.7184 2.20299 7.24005 1.79683 7.84288 1.69285C7.99547 1.66653 8.15706 1.66664 8.34254 1.66677H11.2409C11.4264 1.66664 11.588 1.66653 11.7406 1.69285C12.3434 1.79683 12.8651 2.20299 13.147 2.78789C13.2184 2.93594 13.2694 3.10157 13.3279 3.29169L13.4236 3.60177C13.4399 3.65452 13.4444 3.66906 13.4484 3.68084C13.5985 4.12909 14.0648 4.43246 14.5059 4.44454H16.6488C17.0038 4.44454 17.2917 4.75545 17.2917 5.13898C17.2917 5.5225 17.0038 5.83341 16.6488 5.83341H2.93451C2.57947 5.83341 2.29166 5.5225 2.29166 5.13898Z" fill="currentColor" />
+                                                        <path opacity="0.3" d="M9.67232 18.3333H10.3281C12.5843 18.3333 13.7125 18.3333 14.4459 17.6139C15.1794 16.8946 15.2545 15.7146 15.4046 13.3547L15.6208 9.95428C15.7023 8.67382 15.743 8.03358 15.375 7.62788C15.007 7.22217 14.3856 7.22217 13.1429 7.22217H6.85755C5.61477 7.22217 4.99337 7.22217 4.62541 7.62788C4.25744 8.03358 4.29815 8.67382 4.37959 9.95428L4.59584 13.3547C4.74593 15.7146 4.82097 16.8946 5.55446 17.6139C6.28795 18.3333 7.41607 18.3333 9.67232 18.3333Z" fill="currentColor" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                            <template x-for="(col, i) in {{ columns_second_table }}" :key="i">
+                                                <td>  
+                                                    <template x-if="file_columns.includes(col)">
+                                                        <form method="POST" class="space-y-4" id="dynamic_form"
+                                                            x-bind:action="`{{ url_for('dynamic.upload_file', table_name=model_second_table, id='__id__', column='__replace__') }}`.replace('__replace__', col).replace('__id__', record.id)"
+                                                            enctype="multipart/form-data">        
+                                                            <div class="border w-10 h-10 flex items-center justify-center text-primary border-transparent rounded-md transition-all duration-300 hover:text-white hover:bg-primary bg-primary/10">
+                                                                <input type="file" :id="`file-upload-${col}-${record.id}`" name="archivo" class="hidden"  @change="console.log('changed', $event.target.files)">
+                                                                <label :for="`file-upload-${col}-${record.id}`">
+                                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                        <path d="M12 16V3M12 3L16 7.375M12 3L8 7.375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                    </svg>
+                                                                </label>                    
+                                                            </div>    
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                        </form>
+                                                    </template>      
+                                                    <template x-if="{{ edit_fields }}.includes(col) && number_columns.includes(col)">
+                                                        <form method="POST">
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                            <input type="number" x-model="record[col]"
+                                                                class="form-input rounded-lg w-32 h-12 " 
+                                                                @blur="update_record(record,col)" />
+                                                        </form>
+                                                    </template>    
+                                                    <template x-if="{{ edit_fields }}.includes(col) && money_format_columns.includes(col)">
+                                                        <form method="POST">
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                            <label class="flex">
+                                                                <div class="flex items-center justify-center rounded-l border-r-0 border-2 border-gray/10 bg-gray/[8%] dark:border-lightgray/20 dark:text-white dark:bg-lightgray/10 px-3.5">
+                                                                    <span>$</span>
+                                                                </div>
+                                                                <input type="number" x-model="record[col]" class="form-input rounded-r border-2 rounded-none w-32 h-12" @blur="update_record(record, col)"/>
+                                                            </label>
+                                                        </form>
+                                                    </template>
+                                                    <template x-if="{{ edit_fields }}.includes(col) && percentage_format_columns.includes(col)">
+                                                        <form method="POST">
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                            <label class="flex">
+                                                                <input type="number" x-model="record[col]" class="form-input rounded-l border-2 rounded-none w-32 h-12" @blur="update_record(record, col)"/>
+                                                                <div class="flex items-center justify-center rounded-r border-l-0 border-2 border-gray/10 bg-gray/[8%] dark:border-lightgray/20 dark:text-white dark:bg-lightgray/10 px-3.5">
+                                                                    <span>%</span>
+                                                                </div>                                                                
+                                                            </label>
+                                                        </form>
+                                                    </template>                                                    
+                                                    <template x-if="{{ edit_fields }}.includes(col) && date_columns.includes(col)">
+                                                        <form method="POST">
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                            <input type="date" x-model="record[col]"
+                                                                class="form-input rounded-lg" style="width:150px"
+                                                                @blur="update_record(record,col)"></input>
+                                                        </form>
+                                                    </template>
+                                                    <template x-if="{{ edit_fields }}.includes(col) && textarea_columns.includes(col)">
+                                                        <form method="POST">
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                            <textarea rows='3'  x-model="record[col]"
+                                                                class="form-textarea rounded-lg w-50 h-20" 
+                                                                @blur="update_record(record,col)"></textarea>
+                                                        </form>
+                                                    </template>
+                                                    <template x-if="{{ edit_fields }}.includes(col) && text_columns.includes(col)">
+                                                        <form method="POST">
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                            <input type="text" x-model="record[col]"
+                                                                class="form-input rounded-lg w-32 h-12 " 
+                                                                @blur="update_record(record,col)" />
+                                                        </form>
+                                                    </template>
+                                                    <template x-if="{{ edit_fields }}.includes(col) && time_columns.includes(col)">
+                                                        <form method="POST">
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                            <input type="time" x-model="record[col]"
+                                                                class="form-input rounded-lg" style="width:150px"
+                                                                @blur="update_record(record,col)"></input>
+                                                        </form>
+                                                    </template>
+                                                    {% include 'partials/double_table/dropdowns/' ~ table_name ~ '.html' ignore missing %}                                        
+                                                    <!-- Mostrar otras columnas normalmente -->
+                                                    <template x-if="!{{ edit_fields }}.includes(col) && !String(col).includes('fecha')">
+                                                        <span
+                                                            x-text="
+                                                                record[col]
+                                                                    ? (
+                                                                        money_format_columns.includes(col)
+                                                                            ? money_format(record[col])
+                                                                        : percentage_format_columns.includes(col)
+                                                                            ? record[col] + '%'
+                                                                        : typeof record[col] === 'number'
+                                                                            ? commafy(record[col])
+                                                                        : record[col]
+                                                                    )
+                                                                    : '-'
+                                                            ">
+                                                        </span>
+                                                    </template>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const allow_new_value_dropdowns={{ vars.allow_new_value_dropdowns | tojson }};
+    const main_table_name={{ table_name | tojson }};
+    const id_main_record={{ id_main_record | tojson }};
+    const table_name={{ model_second_table | tojson }};
+    const file_columns = {{ vars.file_columns | tojson }};
+    const date_columns = {{ vars.date_columns | tojson }};
+    const date_time_columns = {{ vars.date_time_columns | tojson }};
+    const time_columns = {{ vars.time_columns | tojson }};
+    const textarea_columns = {{ vars.textarea_columns | tojson }};
+    const number_columns = {{ vars.number_columns | tojson }};
+    const text_columns = {{ vars.text_columns | tojson }};
+    const money_format_columns = {{ vars.money_format_columns | tojson }};
+    const percentage_format_columns = {{ vars.percentage_format_columns | tojson }};
+    const drop_downs = {{ vars.drop_downs | tojson }};
+    const title_formats = {{ title_formats | tojson }}; 
+    const csrfToken='{{ csrf_token() }}';
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('view', { mode: 'split' }); // split | first | second
+    });    
+</script>
+<script src="{{ url_for('static', filename='js/system/table/data-search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/data_table.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/loader.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/dynamic_table_init.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/table/format_functions.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/system/double_table/upload_file.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/double_table/update_record.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/double_table/add_record.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/double_table/delete_record.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/double_table/reload_tables.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/double_table/select2.js') }}"></script>
+<script src="{{ url_for('static', filename='js/system/double_table/reload_details.js') }}"></script>
+
+{% include "partials/system/loader.html" %}
+
+{% endblock content %}
